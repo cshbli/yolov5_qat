@@ -53,10 +53,22 @@ class Detect(nn.Module):
         self.m = nn.ModuleList(nn.Conv2d(x, self.no * self.na, 1) for x in ch)  # output conv
         self.inplace = inplace  # use inplace ops (e.g. slice assignment)
 
+        self.dequant0 = torch.ao.quantization.DeQuantStub()
+        self.dequant1 = torch.ao.quantization.DeQuantStub()
+        self.dequant2 = torch.ao.quantization.DeQuantStub()
+
     def forward(self, x):
         z = []  # inference output
         for i in range(self.nl):
             x[i] = self.m[i](x[i])  # conv
+
+            if i == 0:
+                x[i] = self.dequant0(x[i])
+            elif i == 1:
+                x[i] = self.dequant1(x[i])
+            elif i == 2:
+                x[i] = self.dequant2(x[i])
+
             bs, _, ny, nx = x[i].shape  # x(bs,255,20,20) to x(bs,3,20,20,85)
             x[i] = x[i].view(bs, self.na, self.no, ny, nx).permute(0, 1, 3, 4, 2).contiguous()
 
@@ -186,6 +198,8 @@ class DetectionModel(BaseModel):
         self.names = [str(i) for i in range(self.yaml['nc'])]  # default names
         self.inplace = self.yaml.get('inplace', True)
 
+        self.quant = torch.ao.quantization.QuantStub()
+
         # Build strides, anchors
         m = self.model[-1]  # Detect()
         if isinstance(m, (Detect, Segment)):
@@ -204,6 +218,9 @@ class DetectionModel(BaseModel):
         LOGGER.info('')
 
     def forward(self, x, augment=False, profile=False, visualize=False):
+
+        x = self.quant(x)
+
         if augment:
             return self._forward_augment(x)  # augmented inference, None
         return self._forward_once(x, profile, visualize)  # single-scale inference, train
@@ -259,6 +276,11 @@ class DetectionModel(BaseModel):
             b.data[:, 4] += math.log(8 / (640 / s) ** 2)  # obj (8 objects per 640 image)
             b.data[:, 5:5 + m.nc] += math.log(0.6 / (m.nc - 0.99999)) if cf is None else torch.log(cf / cf.sum())  # cls
             mi.bias = torch.nn.Parameter(b.view(-1), requires_grad=True)
+
+    def fuse_model(self):
+        for m in self.modules():
+            if type(m) == Conv:
+                torch.ao.quantization.fuse_modules(m, ['conv', 'bn', 'act'], inplace=True)
 
 
 Model = DetectionModel  # retain YOLOv5 'Model' class for backwards compatibility

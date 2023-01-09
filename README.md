@@ -97,6 +97,8 @@ python train.py --data coco.yaml --epochs 50 --weights weights/yolov5m.pt --hyp 
                    all       5000      36335      0.707      0.569      0.619      0.431
 ```
 
+Here is the complete retraining log file [retraining after replacing SiLU with ReLU](./relu_retraining.csv).
+
 Assuming the retraining result folder name is changed to **relu**, run validation test:
 
 ```
