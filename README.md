@@ -248,4 +248,38 @@ Starting training for 20 epochs...
 
 ### Experiment 2: Quantization with Conv+BN+ReLU, skip_add and Concat
 
+- QAT can't use multiple GPUs. We need to specify the device ID.
+
+```
+python train.py --data coco.yaml --epochs 20 --cfg models/yolov5m.yaml \
+--weights runs/train/relu/weights/best.pt --hyp data/hyps/hyp.qat.yaml \
+--batch-size 32 --qat --device 1
+```
+
 Please see the quantized model structure here: [Quantized mode structure](./qat_model.txt)
+
+Result log:
+
+```
+Starting training for 20 epochs...
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       0/19      10.6G    0.03888    0.05642    0.01281        199        640: 100%|██████████| 3697/3697 [20:25<00:00,  3.02it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:43<00:00,  1.80it/s]
+                   all       5000      36335      0.707      0.559      0.613      0.415
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       1/19      9.74G    0.03884    0.05632    0.01265        168        640: 100%|██████████| 3697/3697 [19:19<00:00,  3.19it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:43<00:00,  1.83it/s]
+                   all       5000      36335      0.714      0.556      0.614      0.415
+      
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      18/19      11.1G    0.03846    0.05547    0.01208        191        640: 100%|██████████| 3697/3697 [17:25<00:00,  3.54it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:35<00:00,  2.24it/s]
+                   all       5000      36335      0.708      0.561      0.614      0.415
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      19/19      11.1G    0.03841    0.05548    0.01204        202        640: 100%|██████████| 3697/3697 [17:28<00:00,  3.53it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:35<00:00,  2.25it/s]
+                   all       5000      36335      0.704      0.564      0.614      0.416
+```
