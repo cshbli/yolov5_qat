@@ -41,7 +41,7 @@ class Detect(nn.Module):
     dynamic = False  # force grid reconstruction
     export = False  # export mode
 
-    def __init__(self, nc=80, anchors=(), ch=(), inplace=True):  # detection layer
+    def __init__(self, nc=80, anchors=(), ch=(), inplace=True, qat=False):  # detection layer
         super().__init__()
         self.nc = nc  # number of classes
         self.no = nc + 5  # number of outputs per anchor
@@ -53,21 +53,24 @@ class Detect(nn.Module):
         self.m = nn.ModuleList(nn.Conv2d(x, self.no * self.na, 1) for x in ch)  # output conv
         self.inplace = inplace  # use inplace ops (e.g. slice assignment)
 
-        self.dequant0 = torch.ao.quantization.DeQuantStub()
-        self.dequant1 = torch.ao.quantization.DeQuantStub()
-        self.dequant2 = torch.ao.quantization.DeQuantStub()
+        self.qat = qat
+        if self.qat:
+            self.dequant0 = torch.ao.quantization.DeQuantStub()
+            self.dequant1 = torch.ao.quantization.DeQuantStub()
+            self.dequant2 = torch.ao.quantization.DeQuantStub()
 
     def forward(self, x):
         z = []  # inference output
         for i in range(self.nl):
             x[i] = self.m[i](x[i])  # conv
 
-            if i == 0:
-                x[i] = self.dequant0(x[i])
-            elif i == 1:
-                x[i] = self.dequant1(x[i])
-            elif i == 2:
-                x[i] = self.dequant2(x[i])
+            if hasattr(self, "qat") and self.qat:
+                if i == 0:
+                    x[i] = self.dequant0(x[i])
+                elif i == 1:
+                    x[i] = self.dequant1(x[i])
+                elif i == 2:
+                    x[i] = self.dequant2(x[i])
 
             bs, _, ny, nx = x[i].shape  # x(bs,255,20,20) to x(bs,3,20,20,85)
             x[i] = x[i].view(bs, self.na, self.no, ny, nx).permute(0, 1, 3, 4, 2).contiguous()
@@ -176,7 +179,7 @@ class BaseModel(nn.Module):
 
 class DetectionModel(BaseModel):
     # YOLOv5 detection model
-    def __init__(self, cfg='yolov5s.yaml', ch=3, nc=None, anchors=None):  # model, input channels, number of classes
+    def __init__(self, cfg='yolov5s.yaml', ch=3, nc=None, anchors=None, qat=False):  # model, input channels, number of classes
         super().__init__()
         if isinstance(cfg, dict):
             self.yaml = cfg  # model dict
@@ -198,7 +201,9 @@ class DetectionModel(BaseModel):
         self.names = [str(i) for i in range(self.yaml['nc'])]  # default names
         self.inplace = self.yaml.get('inplace', True)
 
-        self.quant = torch.ao.quantization.QuantStub()
+        self.qat = qat
+        if self.qat:
+            self.quant = torch.ao.quantization.QuantStub()
 
         # Build strides, anchors
         m = self.model[-1]  # Detect()
@@ -219,7 +224,8 @@ class DetectionModel(BaseModel):
 
     def forward(self, x, augment=False, profile=False, visualize=False):
 
-        x = self.quant(x)
+        if hasattr(self, "qat") and self.qat:
+            x = self.quant(x)
 
         if augment:
             return self._forward_augment(x)  # augmented inference, None
@@ -280,7 +286,8 @@ class DetectionModel(BaseModel):
     def fuse_model(self):
         for m in self.modules():
             if type(m) == Conv:
-                torch.ao.quantization.fuse_modules(m, ['conv', 'bn', 'act'], inplace=True)
+                # torch.ao.quantization.fuse_modules(m, ['conv', 'bn', 'act'], inplace=True)
+                torch.ao.quantization.fuse_modules(m, ['conv', 'bn'], inplace=True)
 
 
 Model = DetectionModel  # retain YOLOv5 'Model' class for backwards compatibility
@@ -318,7 +325,7 @@ class ClassificationModel(BaseModel):
         self.model = None
 
 
-def parse_model(d, ch):  # model_dict, input_channels(3)
+def parse_model(d, ch, qat=False):  # model_dict, input_channels(3)
     # Parse a YOLOv5 model.yaml dictionary
     LOGGER.info(f"\n{'':>3}{'from':>18}{'n':>3}{'params':>10}  {'module':<40}{'arguments':<30}")
     anchors, nc, gd, gw, act = d['anchors'], d['nc'], d['depth_multiple'], d['width_multiple'], d.get('activation')
@@ -358,6 +365,7 @@ def parse_model(d, ch):  # model_dict, input_channels(3)
                 args[1] = [list(range(args[1] * 2))] * len(f)
             if m is Segment:
                 args[3] = make_divisible(args[3] * gw, 8)
+            args.append([qat])
         elif m is Contract:
             c2 = ch[f] * args[0] ** 2
         elif m is Expand:
