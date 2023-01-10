@@ -52,8 +52,8 @@ class Conv(nn.Module):
         self.conv = nn.Conv2d(c1, c2, k, s, autopad(k, p, d), groups=g, dilation=d, bias=False)
         self.bn = nn.BatchNorm2d(c2)
         # self.act = self.default_act if act is True else act if isinstance(act, nn.Module) else nn.Identity()
-        # self.act = nn.ReLU() if act is True else act if isinstance(act, nn.Module) else nn.Identity()
-        self.act = nn.ReLU6() if act is True else act if isinstance(act, nn.Module) else nn.Identity()
+        self.act = nn.ReLU() if act is True else act if isinstance(act, nn.Module) else nn.Identity()
+        # self.act = nn.ReLU6() if act is True else act if isinstance(act, nn.Module) else nn.Identity()
 
     def forward(self, x):
         return self.act(self.bn(self.conv(x)))
@@ -119,8 +119,11 @@ class Bottleneck(nn.Module):
         self.cv2 = Conv(c_, c2, 3, 1, g=g)
         self.add = shortcut and c1 == c2
 
+        self.skip_add = nn.quantized.FloatFunctional()
+
     def forward(self, x):
-        return x + self.cv2(self.cv1(x)) if self.add else self.cv2(self.cv1(x))
+        # return x + self.cv2(self.cv1(x)) if self.add else self.cv2(self.cv1(x))
+        return self.skip_add.add(x, self.cv2(self.cv1(x))) if self.add else self.cv2(self.cv1(x))
 
 
 class BottleneckCSP(nn.Module):
@@ -166,8 +169,11 @@ class C3(nn.Module):
         self.cv3 = Conv(2 * c_, c2, 1)  # optional act=FReLU(c2)
         self.m = nn.Sequential(*(Bottleneck(c_, c_, shortcut, g, e=1.0) for _ in range(n)))
 
+        self.concat = nn.quantized.FloatFunctional()
+
     def forward(self, x):
-        return self.cv3(torch.cat((self.m(self.cv1(x)), self.cv2(x)), 1))
+        # return self.cv3(torch.cat((self.m(self.cv1(x)), self.cv2(x)), 1))
+        return self.cv3(self.concat.cat((self.m(self.cv1(x)), self.cv2(x)), 1))
 
 
 class C3x(C3):
@@ -227,13 +233,16 @@ class SPPF(nn.Module):
         self.cv2 = Conv(c_ * 4, c2, 1, 1)
         self.m = nn.MaxPool2d(kernel_size=k, stride=1, padding=k // 2)
 
+        self.concat = nn.quantized.FloatFunctional()
+
     def forward(self, x):
         x = self.cv1(x)
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')  # suppress torch 1.9.0 max_pool2d() warning
             y1 = self.m(x)
             y2 = self.m(y1)
-            return self.cv2(torch.cat((x, y1, y2, self.m(y2)), 1))
+            # return self.cv2(torch.cat((x, y1, y2, self.m(y2)), 1))
+            return self.cv2(self.concat.cat((x, y1, y2, self.m(y2)), 1))
 
 
 class Focus(nn.Module):
@@ -311,8 +320,11 @@ class Concat(nn.Module):
         super().__init__()
         self.d = dimension
 
+        self.concat = nn.quantized.FloatFunctional()
+
     def forward(self, x):
-        return torch.cat(x, self.d)
+        # return torch.cat(x, self.d)  
+        return self.concat.cat(x, self.d)
 
 
 class DetectMultiBackend(nn.Module):

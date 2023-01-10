@@ -246,3 +246,6 @@ Starting training for 20 epochs...
                    all       5000      36335      0.711      0.561      0.614      0.418
 ```
 
+### Experiment 2: Quantization with Conv+BN+ReLU, skip_add and Concat
+
+Please see the quantized model structure here: [Quantized mode structure](./qat_model.txt)

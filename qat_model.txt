@@ -1,0 +1,1536 @@
+DetectionModel(
+  (model): Sequential(
+    (0): Conv(
+      (conv): ConvReLU2d(
+        3, 48, kernel_size=(6, 6), stride=(2, 2), padding=(2, 2)
+        (weight_fake_quant): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+        )
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+      (bn): Identity()
+      (act): Identity()
+    )
+    (1): Conv(
+      (conv): ConvReLU2d(
+        48, 96, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1)
+        (weight_fake_quant): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+        )
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+      (bn): Identity()
+      (act): Identity()
+    )
+    (2): C3(
+      (cv1): Conv(
+        (conv): ConvReLU2d(
+          96, 48, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (cv2): Conv(
+        (conv): ConvReLU2d(
+          96, 48, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (cv3): Conv(
+        (conv): ConvReLU2d(
+          96, 96, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (m): Sequential(
+        (0): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              48, 48, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              48, 48, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+        (1): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              48, 48, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              48, 48, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+      )
+      (concat): FloatFunctional(
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+    )
+    (3): Conv(
+      (conv): ConvReLU2d(
+        96, 192, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1)
+        (weight_fake_quant): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+        )
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+      (bn): Identity()
+      (act): Identity()
+    )
+    (4): C3(
+      (cv1): Conv(
+        (conv): ConvReLU2d(
+          192, 96, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (cv2): Conv(
+        (conv): ConvReLU2d(
+          192, 96, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (cv3): Conv(
+        (conv): ConvReLU2d(
+          192, 192, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (m): Sequential(
+        (0): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              96, 96, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              96, 96, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+        (1): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              96, 96, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              96, 96, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+        (2): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              96, 96, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              96, 96, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+        (3): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              96, 96, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              96, 96, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+      )
+      (concat): FloatFunctional(
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+    )
+    (5): Conv(
+      (conv): ConvReLU2d(
+        192, 384, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1)
+        (weight_fake_quant): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+        )
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+      (bn): Identity()
+      (act): Identity()
+    )
+    (6): C3(
+      (cv1): Conv(
+        (conv): ConvReLU2d(
+          384, 192, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (cv2): Conv(
+        (conv): ConvReLU2d(
+          384, 192, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (cv3): Conv(
+        (conv): ConvReLU2d(
+          384, 384, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (m): Sequential(
+        (0): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+        (1): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+        (2): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+        (3): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+        (4): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+        (5): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+      )
+      (concat): FloatFunctional(
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+    )
+    (7): Conv(
+      (conv): ConvReLU2d(
+        384, 768, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1)
+        (weight_fake_quant): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+        )
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+      (bn): Identity()
+      (act): Identity()
+    )
+    (8): C3(
+      (cv1): Conv(
+        (conv): ConvReLU2d(
+          768, 384, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (cv2): Conv(
+        (conv): ConvReLU2d(
+          768, 384, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (cv3): Conv(
+        (conv): ConvReLU2d(
+          768, 768, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (m): Sequential(
+        (0): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              384, 384, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+        (1): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              384, 384, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+      )
+      (concat): FloatFunctional(
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+    )
+    (9): SPPF(
+      (cv1): Conv(
+        (conv): ConvReLU2d(
+          768, 384, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (cv2): Conv(
+        (conv): ConvReLU2d(
+          1536, 768, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (m): MaxPool2d(kernel_size=5, stride=1, padding=2, dilation=1, ceil_mode=False)
+      (concat): FloatFunctional(
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+    )
+    (10): Conv(
+      (conv): ConvReLU2d(
+        768, 384, kernel_size=(1, 1), stride=(1, 1)
+        (weight_fake_quant): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+        )
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+      (bn): Identity()
+      (act): Identity()
+    )
+    (11): Upsample(scale_factor=2.0, mode=nearest)
+    (12): Concat(
+      (concat): FloatFunctional(
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+    )
+    (13): C3(
+      (cv1): Conv(
+        (conv): ConvReLU2d(
+          768, 192, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (cv2): Conv(
+        (conv): ConvReLU2d(
+          768, 192, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (cv3): Conv(
+        (conv): ConvReLU2d(
+          384, 384, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (m): Sequential(
+        (0): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+        (1): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+      )
+      (concat): FloatFunctional(
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+    )
+    (14): Conv(
+      (conv): ConvReLU2d(
+        384, 192, kernel_size=(1, 1), stride=(1, 1)
+        (weight_fake_quant): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+        )
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+      (bn): Identity()
+      (act): Identity()
+    )
+    (15): Upsample(scale_factor=2.0, mode=nearest)
+    (16): Concat(
+      (concat): FloatFunctional(
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+    )
+    (17): C3(
+      (cv1): Conv(
+        (conv): ConvReLU2d(
+          384, 96, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (cv2): Conv(
+        (conv): ConvReLU2d(
+          384, 96, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (cv3): Conv(
+        (conv): ConvReLU2d(
+          192, 192, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (m): Sequential(
+        (0): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              96, 96, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              96, 96, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+        (1): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              96, 96, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              96, 96, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+      )
+      (concat): FloatFunctional(
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+    )
+    (18): Conv(
+      (conv): ConvReLU2d(
+        192, 192, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1)
+        (weight_fake_quant): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+        )
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+      (bn): Identity()
+      (act): Identity()
+    )
+    (19): Concat(
+      (concat): FloatFunctional(
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+    )
+    (20): C3(
+      (cv1): Conv(
+        (conv): ConvReLU2d(
+          384, 192, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (cv2): Conv(
+        (conv): ConvReLU2d(
+          384, 192, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (cv3): Conv(
+        (conv): ConvReLU2d(
+          384, 384, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (m): Sequential(
+        (0): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+        (1): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              192, 192, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+      )
+      (concat): FloatFunctional(
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+    )
+    (21): Conv(
+      (conv): ConvReLU2d(
+        384, 384, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1)
+        (weight_fake_quant): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+        )
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+      (bn): Identity()
+      (act): Identity()
+    )
+    (22): Concat(
+      (concat): FloatFunctional(
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+    )
+    (23): C3(
+      (cv1): Conv(
+        (conv): ConvReLU2d(
+          768, 384, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (cv2): Conv(
+        (conv): ConvReLU2d(
+          768, 384, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (cv3): Conv(
+        (conv): ConvReLU2d(
+          768, 768, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (bn): Identity()
+        (act): Identity()
+      )
+      (m): Sequential(
+        (0): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              384, 384, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+        (1): Bottleneck(
+          (cv1): Conv(
+            (conv): ConvReLU2d(
+              384, 384, kernel_size=(1, 1), stride=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (cv2): Conv(
+            (conv): ConvReLU2d(
+              384, 384, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+              (weight_fake_quant): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+              )
+              (activation_post_process): FakeQuantize(
+                fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+                (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+              )
+            )
+            (bn): Identity()
+            (act): Identity()
+          )
+          (skip_add): FloatFunctional(
+            (activation_post_process): FakeQuantize(
+              fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+              (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+            )
+          )
+        )
+      )
+      (concat): FloatFunctional(
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+        )
+      )
+    )
+    (24): Detect(
+      (m): ModuleList(
+        (0): Conv2d(
+          192, 255, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (1): Conv2d(
+          384, 255, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+        (2): Conv2d(
+          768, 255, kernel_size=(1, 1), stride=(1, 1)
+          (weight_fake_quant): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAveragePerChannelMinMaxObserver(min_val=tensor([], device='cuda:0'), max_val=tensor([], device='cuda:0'))
+          )
+          (activation_post_process): FakeQuantize(
+            fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+            (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+          )
+        )
+      )
+      (dequant0): DeQuantStub()
+      (dequant1): DeQuantStub()
+      (dequant2): DeQuantStub()
+    )
+  )
+  (quant): QuantStub(
+    (activation_post_process): FakeQuantize(
+      fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([1.], device='cuda:0'), zero_point=tensor([0], device='cuda:0', dtype=torch.int32)
+      (activation_post_process): MovingAverageMinMaxObserver(min_val=inf, max_val=-inf)
+    )
+  )
+)
+
+
