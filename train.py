@@ -66,6 +66,84 @@ WORLD_SIZE = int(os.getenv('WORLD_SIZE', 1))
 # GIT_INFO = check_git_info()
 
 
+def prepare_qat_model(model, device, backend='default'):
+    if backend == 'default':
+        # Fuse modules for QAT
+        model.eval()
+        model.fuse_model()
+
+        import torch.ao.quantization as quantizer
+
+        activation_quant = quantizer.FakeQuantize.with_args(
+                    observer=quantizer.MovingAverageMinMaxObserver.with_args(dtype=torch.qint8), 
+                    quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, reduce_range=False)
+        weight_quant = quantizer.FakeQuantize.with_args(
+                    observer=quantizer.MovingAveragePerChannelMinMaxObserver.with_args(dtype=torch.qint8), 
+                    quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, reduce_range=False)            
+
+        # assign qconfig to model
+        model.qconfig = quantizer.QConfig(activation=activation_quant, weight=weight_quant)
+
+        # prepare qat model using qconfig settings
+        model.train()
+        quantizer.prepare_qat(model, inplace=True)
+        return model
+
+    elif backend == 'bst':
+        import bstnnx_training.PyTorch.QAT.core as quantizer
+
+        # Fuse Modules for QAT
+        # define one sample data used for fusing model
+        sample_data = torch.randn(1, 3, 640, 640, requires_grad=True)    
+
+        # use CPU on input_tensor as our backend for parsing GraphTopology forced model to be on CPU    
+        model = quantizer.fuse_modules(model, auto_detect=True, debug_mode=True, input_tensor=sample_data.to('cpu'))
+
+        bst_activation_quant = quantizer.FakeQuantize.with_args(
+            observer=quantizer.MovingAverageMinMaxObserver.with_args(dtype=torch.qint8), 
+            quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, reduce_range=False)
+        bst_weight_quant = quantizer.FakeQuantize.with_args(
+            observer=quantizer.MovingAveragePerChannelMinMaxObserver.with_args(dtype=torch.qint8), 
+            quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, reduce_range=False)
+        
+        # 1) [bst_alignment] get b0 pre-bind qconfig adjusting Conv's activation quant scheme
+        pre_bind_qconfig = quantizer.pre_bind(model, input_tensor=sample_data.to('cpu'), debug_mode=True,
+            observer_scheme_dict={"weight_scheme": "MovingAveragePerChannelMinMaxObserver", 
+                                  "activation_scheme": "MovingAverageMinMaxObserver"})
+        
+        # 2) assign qconfig to model
+        model.qconfig = quantizer.QConfig(activation=bst_activation_quant, weight=bst_weight_quant,
+                                          qconfig_dict=pre_bind_qconfig)
+        
+        # 3) prepare qat model using qconfig settings
+        prepared_model = quantizer.prepare_qat(model, inplace=False)
+
+        for name, m in prepared_model.named_children():            
+            if name == 'model':
+                for n, mchild in m.named_children():                    
+                    if n == "12":
+                        mchild.i = 12
+                        mchild.f = [-1, 6]                        
+                    elif n == "16":
+                        mchild.i = 16
+                        mchild.f = [-1, 4]
+                    elif n == "19":
+                        mchild.i = 19
+                        mchild.f = [-1, 14]
+                    elif n == "22":
+                        mchild.i = 22
+                        mchild.f = [-1, 10]
+        
+        # # 4) [bst_alignment] link model observers
+        # prepared_model = quantizer.link_modules(prepared_model, auto_detect=True, input_tensor=sample_data.to('cpu'), inplace=False)    
+    
+        prepared_model.to(device)
+
+        return prepared_model
+    
+    return model
+
+
 def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictionary
     save_dir, epochs, batch_size, weights, single_cls, evolve, data, cfg, resume, noval, nosave, workers, freeze = \
         Path(opt.save_dir), opt.epochs, opt.batch_size, opt.weights, opt.single_cls, opt.evolve, opt.data, opt.cfg, \
@@ -131,26 +209,8 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
     else:
         model = Model(cfg, ch=3, nc=nc, anchors=hyp.get('anchors')).to(device)  # create
 
-    # Fuse model for QAT
-    if opt.qat:
-        model.eval()
-        model.fuse_model()
-
-        import torch.ao.quantization as quantizer
-
-        activation_quant = quantizer.FakeQuantize.with_args(
-                    observer=quantizer.MovingAverageMinMaxObserver.with_args(dtype=torch.qint8), 
-                    quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, reduce_range=False)
-        weight_quant = quantizer.FakeQuantize.with_args(
-                    observer=quantizer.MovingAveragePerChannelMinMaxObserver.with_args(dtype=torch.qint8), 
-                    quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, reduce_range=False)            
-
-        # assign qconfig to model
-        model.qconfig = quantizer.QConfig(activation=activation_quant, weight=weight_quant)
-
-        # prepare qat model using qconfig settings
-        model.train()
-        quantizer.prepare_qat(model, inplace=True)
+    if opt.qat:        
+        model = prepare_qat_model(model, device, backend="bst")
 
     amp = check_amp(model)  # check AMP
 
@@ -367,7 +427,10 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
 
             if opt.qat and epoch == 0:
                 # Freeze quantizer parameters
-                model.apply(torch.ao.quantization.disable_observer)
+                model.apply(torch.quantization.disable_observer)
+
+                # # Extra step: to align hardware, it will only be applied once for unaligned model
+                # quantizer.align_bst_hardware(model, sample_data)
                 
                 # Freeze batch norm mean and variance estimates
                 model.apply(torch.nn.intrinsic.qat.freeze_bn_stats)
@@ -436,6 +499,14 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
                 torch.save(ckpt, last)
                 if best_fitness == fi:
                     torch.save(ckpt, best)
+                    # if opt.qat:
+                    #     sample_data = torch.randn(1, 3, 640, 640, requires_grad=True)
+                    #     stage_dict={}
+                    #     stage_dict['simplify_onnx'] = True
+                    #     onnx_model_path, quant_param_json_path = quantizer.export_onnx(model, 
+                    #                                                     sample_data, 
+                    #                                                     stage_dict=stage_dict, 
+                    #                                                     result_dir=w)
                 if opt.save_period > 0 and epoch % opt.save_period == 0:
                     torch.save(ckpt, w / f'epoch{epoch}.pt')
                 del ckpt

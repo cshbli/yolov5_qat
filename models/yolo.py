@@ -34,6 +34,7 @@ try:
 except ImportError:
     thop = None
 
+from torch.quantization import QuantStub, DeQuantStub
 
 class Detect(nn.Module):
     # YOLOv5 Detect head for detection models
@@ -53,9 +54,9 @@ class Detect(nn.Module):
         self.m = nn.ModuleList(nn.Conv2d(x, self.no * self.na, 1) for x in ch)  # output conv
         self.inplace = inplace  # use inplace ops (e.g. slice assignment)
 
-        self.dequant0 = torch.ao.quantization.DeQuantStub()
-        self.dequant1 = torch.ao.quantization.DeQuantStub()
-        self.dequant2 = torch.ao.quantization.DeQuantStub()
+        self.dequant0 = DeQuantStub()
+        self.dequant1 = DeQuantStub()
+        self.dequant2 = DeQuantStub()
 
     def forward(self, x):
         z = []  # inference output
@@ -198,7 +199,7 @@ class DetectionModel(BaseModel):
         self.names = [str(i) for i in range(self.yaml['nc'])]  # default names
         self.inplace = self.yaml.get('inplace', True)
 
-        self.quant = torch.ao.quantization.QuantStub()
+        self.quant = QuantStub()
 
         # Build strides, anchors
         m = self.model[-1]  # Detect()
