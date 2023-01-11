@@ -33,9 +33,9 @@ from utils.general import (LOGGER, ROOT, Profile, check_requirements, check_suff
 from utils.plots import Annotator, colors, save_one_box
 from utils.torch_utils import copy_attr, smart_inference_mode
 
-# from bstnnx_training.PyTorch.QAT import modules as bstnn
-# # We are going to replace Concat module with BstConcat. QAT will quantize BstConcat
-# from bstnnx_training.PyTorch.QAT.modules import BstConcat 
+from bstnnx_training.PyTorch.QAT import modules as bstnn
+# We are going to replace Concat module with BstConcat. QAT will quantize BstConcat
+from bstnnx_training.PyTorch.QAT.modules import BstConcat 
 
 def autopad(k, p=None, d=1):  # kernel, padding, dilation
     # Pad to 'same' shape outputs
@@ -122,13 +122,11 @@ class Bottleneck(nn.Module):
         self.cv2 = Conv(c_, c2, 3, 1, g=g)
         self.add = shortcut and c1 == c2
 
-        self.skip_add = nn.quantized.FloatFunctional()
-        # self.skip_add = bstnn.Add()
+        self.skip_add = bstnn.Add()
 
     def forward(self, x):
         # return x + self.cv2(self.cv1(x)) if self.add else self.cv2(self.cv1(x))
-        return self.skip_add.add(x, self.cv2(self.cv1(x))) if self.add else self.cv2(self.cv1(x))
-        # return self.skip_add(x, self.cv2(self.cv1(x))) if self.add else self.cv2(self.cv1(x))
+        return self.skip_add(x, self.cv2(self.cv1(x))) if self.add else self.cv2(self.cv1(x))
 
 class BottleneckCSP(nn.Module):
     # CSP Bottleneck https://github.com/WongKinYiu/CrossStagePartialNetworks
@@ -173,13 +171,11 @@ class C3(nn.Module):
         self.cv3 = Conv(2 * c_, c2, 1)  # optional act=FReLU(c2)
         self.m = nn.Sequential(*(Bottleneck(c_, c_, shortcut, g, e=1.0) for _ in range(n)))
 
-        self.concat = nn.quantized.FloatFunctional()
-        # self.concat = bstnn.CatChannel()
+        self.concat = bstnn.CatChannel()
 
     def forward(self, x):
         # return self.cv3(torch.cat((self.m(self.cv1(x)), self.cv2(x)), 1))
-        return self.cv3(self.concat.cat((self.m(self.cv1(x)), self.cv2(x)), 1))
-        # return self.cv3(self.concat(self.m(self.cv1(x)), self.cv2(x)))
+        return self.cv3(self.concat(self.m(self.cv1(x)), self.cv2(x)))
 
 
 class C3x(C3):
@@ -239,8 +235,7 @@ class SPPF(nn.Module):
         self.cv2 = Conv(c_ * 4, c2, 1, 1)
         self.m = nn.MaxPool2d(kernel_size=k, stride=1, padding=k // 2)
 
-        self.concat = nn.quantized.FloatFunctional()
-        # self.concat = bstnn.CatChannel()
+        self.concat = bstnn.CatChannel()
 
     def forward(self, x):
         x = self.cv1(x)
@@ -249,8 +244,7 @@ class SPPF(nn.Module):
             y1 = self.m(x)
             y2 = self.m(y1)
             # return self.cv2(torch.cat((x, y1, y2, self.m(y2)), 1))
-            return self.cv2(self.concat.cat((x, y1, y2, self.m(y2)), 1))
-            # return self.cv2(self.concat(x, y1, y2, self.m(y2)))
+            return self.cv2(self.concat(x, y1, y2, self.m(y2)))
 
 
 class Focus(nn.Module):
@@ -325,19 +319,19 @@ class Expand(nn.Module):
 # bstnn.CatChannel takes multiple tensors as inputs
 # bstnn.BstConcat takes one tensor array as the input
 # We can't reuse bstnn.CatChannel here and have to redefine another module in QAT software package
-# Concat = BstConcat
+Concat = BstConcat
 
-class Concat(nn.Module):
-    # Concatenate a list of tensors along dimension
-    def __init__(self, dimension=1):
-        super().__init__()
-        self.d = dimension
+# class Concat(nn.Module):
+#     # Concatenate a list of tensors along dimension
+#     def __init__(self, dimension=1):
+#         super().__init__()
+#         self.d = dimension
 
-        self.concat = nn.quantized.FloatFunctional()
+#         self.concat = nn.quantized.FloatFunctional()
 
-    def forward(self, x):
-        # return torch.cat(x, self.d)  
-        return self.concat.cat(x, self.d)
+#     def forward(self, x):
+#         # return torch.cat(x, self.d)  
+#         return self.concat.cat(x, self.d)
 
 
 class DetectMultiBackend(nn.Module):

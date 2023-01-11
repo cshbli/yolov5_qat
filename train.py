@@ -97,7 +97,7 @@ def prepare_qat_model(model, device, backend='default'):
         sample_data = torch.randn(1, 3, 640, 640, requires_grad=True)    
 
         # use CPU on input_tensor as our backend for parsing GraphTopology forced model to be on CPU    
-        model = quantizer.fuse_modules(model, auto_detect=True, debug_mode=True, input_tensor=sample_data.to('cpu'))
+        model = quantizer.fuse_modules(model, auto_detect=True, debug_mode=False, input_tensor=sample_data.to('cpu'))
 
         bst_activation_quant = quantizer.FakeQuantize.with_args(
             observer=quantizer.MovingAverageMinMaxObserver.with_args(dtype=torch.qint8), 
@@ -107,7 +107,7 @@ def prepare_qat_model(model, device, backend='default'):
             quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, reduce_range=False)
         
         # 1) [bst_alignment] get b0 pre-bind qconfig adjusting Conv's activation quant scheme
-        pre_bind_qconfig = quantizer.pre_bind(model, input_tensor=sample_data.to('cpu'), debug_mode=True,
+        pre_bind_qconfig = quantizer.pre_bind(model, input_tensor=sample_data.to('cpu'), debug_mode=False,
             observer_scheme_dict={"weight_scheme": "MovingAveragePerChannelMinMaxObserver", 
                                   "activation_scheme": "MovingAverageMinMaxObserver"})
         
@@ -210,7 +210,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
         model = Model(cfg, ch=3, nc=nc, anchors=hyp.get('anchors')).to(device)  # create
 
     if opt.qat:        
-        model = prepare_qat_model(model, device, backend="bst-new")
+        model = prepare_qat_model(model, device, backend="bst")
 
     amp = check_amp(model)  # check AMP
 
