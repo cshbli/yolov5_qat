@@ -67,12 +67,12 @@ WORLD_SIZE = int(os.getenv('WORLD_SIZE', 1))
 
 
 def prepare_qat_model(model, device, backend='default'):
-    if backend == 'default':
+    if backend == 'default' or backend == 'bst-new':
         # Fuse modules for QAT
         model.eval()
         model.fuse_model()
 
-        import torch.ao.quantization as quantizer
+        import bst.torch.ao.quantization as quantizer
 
         activation_quant = quantizer.FakeQuantize.with_args(
                     observer=quantizer.MovingAverageMinMaxObserver.with_args(dtype=torch.qint8), 
@@ -210,7 +210,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
         model = Model(cfg, ch=3, nc=nc, anchors=hyp.get('anchors')).to(device)  # create
 
     if opt.qat:        
-        model = prepare_qat_model(model, device, backend="bst")
+        model = prepare_qat_model(model, device, backend="bst-new")
 
     amp = check_amp(model)  # check AMP
 

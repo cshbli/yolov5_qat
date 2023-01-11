@@ -34,7 +34,8 @@ try:
 except ImportError:
     thop = None
 
-from torch.quantization import QuantStub, DeQuantStub
+from bst.torch.ao.quantization import QuantStub, DeQuantStub
+import bst.torch.ao.quantization as quantizer
 
 class Detect(nn.Module):
     # YOLOv5 Detect head for detection models
@@ -281,7 +282,7 @@ class DetectionModel(BaseModel):
     def fuse_model(self):
         for m in self.modules():
             if type(m) == Conv:
-                torch.ao.quantization.fuse_modules(m, ['conv', 'bn', 'act'], inplace=True)
+                quantizer.fuse_modules(m, ['conv', 'bn', 'act'], inplace=True)
                 # torch.ao.quantization.fuse_modules(m, ['conv', 'bn'], inplace=True)
 
 
