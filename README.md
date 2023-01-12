@@ -205,13 +205,14 @@ PyTorch QAT flow:
 
 <img src="pytorch_qat_flow.png">
 
-### Experiment 1: Quantization with Conv+BN+ReLU only
+### Experiment 1: Quantization with Conv+BN+ReLU, skip_add and Concat
 
 - QAT can't use multiple GPUs. We need to specify the device ID.
+- Please see the quantized model structure here: [Quantized mode structure](./qat_model.txt)
 
 ```
 python train.py --data coco.yaml --epochs 20 --cfg models/yolov5m.yaml \
---weights runs/train/relu/weights/best.pt --hyp data/hyps/hyp.qat.yaml \
+--weights runs/train/relu/weights/best.pt --hyp data/hyps/hyp.m-relu-tune.yaml \
 --batch-size 32 --qat --device 1
 ```
 
@@ -220,32 +221,23 @@ Result log:
 ```
 Starting training for 20 epochs...
 
-      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
-       0/19      9.96G    0.03882    0.05641     0.0128        199        640: 100%|██████████| 3697/3697 [17:44<00:00,  3.47it/s]
-                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:36<00:00,  2.15it/s]
-                   all       5000      36335      0.707      0.559      0.612      0.415
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size       
+       0/19        15G     0.0431    0.05806     0.0141        199        640: 100%|██████████| 3697/3697 [1:08:30<00:00,  1.11s/it]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [02:11<00:00,  1.67s/it]
+                   all       5000      36335      0.677      0.538      0.584      0.369
 
       Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
-       1/19       9.1G    0.03878    0.05633    0.01265        168        640: 100%|██████████| 3697/3697 [17:02<00:00,  3.61it/s]
-                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:35<00:00,  2.20it/s]
-                   all       5000      36335      0.715      0.558      0.614      0.416
-
-      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
-       2/19      9.11G    0.03873    0.05622     0.0125        163        640: 100%|██████████| 3697/3697 [17:02<00:00,  3.61it/s]
-                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:36<00:00,  2.16it/s]
-                   all       5000      36335      0.709      0.559      0.613      0.414
+       1/19      16.8G     0.0429    0.05798    0.01391        169        640: 100%|██████████| 3697/3697 [58:17<00:00,  1.06it/s] 
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [02:11<00:00,  1.66s/it]
+                   all       5000      36335      0.684      0.552      0.595       0.38
       
-      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
-      18/19      9.11G     0.0384    0.05547    0.01208        191        640: 100%|██████████| 3697/3697 [17:02<00:00,  3.61it/s]
-                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:36<00:00,  2.18it/s]
-                   all       5000      36335      0.713      0.557      0.613      0.416
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size      
+      18/19      18.2G    0.04176    0.05679    0.01283        216        640: 100%|██████████| 3697/3697 [36:50<00:00,  1.67it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:00<00:00,  1.32it/s]
+                   all       5000      36335      0.686      0.555        0.6      0.387
 
-      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
-      19/19      9.11G    0.03835    0.05547    0.01204        202        640: 100%|██████████| 3697/3697 [17:03<00:00,  3.61it/s]
-                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:35<00:00,  2.21it/s]
-                   all       5000      36335      0.711      0.561      0.614      0.418
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size      
+      19/19      18.2G    0.04173    0.05679    0.01279        198        640: 100%|██████████| 3697/3697 [36:33<00:00,  1.69it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:00<00:00,  1.31it/s]
+                   all       5000      36335      0.686      0.556      0.602       0.39
 ```
-
-### Experiment 2: Quantization with Conv+BN+ReLU, skip_add and Concat
-
-Please see the quantized model structure here: [Quantized mode structure](./qat_model.txt)
