@@ -6,8 +6,8 @@ the values observed during calibration (PTQ) or training (QAT).
 import torch
 import itertools
 import matplotlib.pyplot as plt
-from torch.ao.quantization.observer import ObserverBase
-from torch.ao.quantization.experimental.apot_utils import float_to_apot, apot_to_float
+from bst.torch.ao.quantization.observer import ObserverBase
+from bst.torch.ao.quantization.experimental.apot_utils import float_to_apot, apot_to_float
 
 # TODO: Consider adding NonUniformQuantizationObserverBase class
 # when more than one non-uniform method is implemented

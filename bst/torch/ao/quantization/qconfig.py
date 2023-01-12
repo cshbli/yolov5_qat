@@ -2,8 +2,9 @@ from collections import namedtuple
 from typing import Optional, Any, Union
 
 import torch
+import bst
 import torch.nn as nn
-from torch.ao.quantization.fake_quantize import (
+from bst.torch.ao.quantization.fake_quantize import (
     FakeQuantize,
     FakeQuantizeBase,
     default_fake_quant,
@@ -396,13 +397,13 @@ def get_default_qconfig_dict(backend='fbgemm', version=0):
     warnings.warn(
         "torch.ao.quantization.get_default_qconfig_dict is deprecated and will be removed in "
         "a future version. Please use torch.ao.quantization.get_default_qconfig_mapping instead.")
-    return torch.ao.quantization.get_default_qconfig_mapping(backend, version).to_dict()
+    return bst.torch.ao.quantization.get_default_qconfig_mapping(backend, version).to_dict()
 
 def get_default_qat_qconfig_dict(backend='fbgemm', version=1):
     warnings.warn(
         "torch.ao.quantization.get_default_qat_qconfig_dict is deprecated and will be removed in "
         "a future version. Please use torch.ao.quantization.get_default_qat_qconfig_mapping instead.")
-    return torch.ao.quantization.get_default_qat_qconfig_mapping(backend, version).to_dict()
+    return bst.torch.ao.quantization.get_default_qat_qconfig_mapping(backend, version).to_dict()
 
 def assert_valid_qconfig(qconfig: Optional[QConfig],
                          mod: torch.nn.Module) -> None:
@@ -421,8 +422,8 @@ def assert_valid_qconfig(qconfig: Optional[QConfig],
             return
         example_observer = qconfig.weight()
         is_per_channel = (
-            isinstance(example_observer, torch.ao.quantization.PerChannelMinMaxObserver) or
-            isinstance(example_observer, torch.ao.quantization.MovingAveragePerChannelMinMaxObserver)
+            isinstance(example_observer, bst.torch.ao.quantization.PerChannelMinMaxObserver) or
+            isinstance(example_observer, bst.torch.ao.quantization.MovingAveragePerChannelMinMaxObserver)
         )
         assert not is_per_channel, \
             'Per channel weight observer is not supported yet for ConvTranspose{n}d.'

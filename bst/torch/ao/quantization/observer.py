@@ -12,7 +12,7 @@ from typing import Any, List, Tuple, Optional, Dict
 
 import torch
 import torch.nn as nn
-from torch.ao.quantization.utils import (
+from bst.torch.ao.quantization.utils import (
     check_min_max_valid, calculate_qmin_qmax, is_per_tensor, is_per_channel)
 
 __all__ = [
@@ -1436,8 +1436,8 @@ def _is_observer_script_module(mod, obs_type_name):
 
 def _is_activation_post_process(module):
     return (
-        isinstance(module, torch.ao.quantization.ObserverBase)
-        or isinstance(module, torch.ao.quantization.FakeQuantize)
+        isinstance(module, bst.torch.ao.quantization.ObserverBase)
+        or isinstance(module, bst.torch.ao.quantization.FakeQuantize)
         or _is_observer_script_module(module, "quantization.observer")
     )
 

@@ -1,9 +1,9 @@
 import torch
 import torch.nn as nn
-import torch.ao.nn.quantized as nnq
+import bst.torch.ao.nn.quantized as nnq
 
-import torch.ao.quantization
-import torch.ao.ns._numeric_suite as ns
+import bst.torch.ao.quantization
+import bst.torch.ao.ns._numeric_suite as ns
 
 _supported_modules = {nn.Linear, nn.Conv2d}
 _supported_modules_quantized = {nnq.Linear, nnq.Conv2d}

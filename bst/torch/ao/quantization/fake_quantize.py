@@ -5,7 +5,7 @@ during QAT.
 
 import torch
 from torch.nn import Module
-from torch.ao.quantization.observer import (
+from bst.torch.ao.quantization.observer import (
     MovingAverageMinMaxObserver,
     HistogramObserver,
     MovingAveragePerChannelMinMaxObserver,
@@ -448,8 +448,8 @@ def _is_fake_quant_script_module(mod):
         # qualified name looks like '__torch__.torch.ao.quantization.fake_quantize.___torch_mangle_2.FakeQuantize'
         suffix = mod._c.qualified_name.split('.', 1)[1]
         name = re.sub(r'\.___torch_mangle_\d+', '', suffix)
-        return name == 'torch.ao.quantization.fake_quantize.FakeQuantize' or \
-            name == 'torch.ao.quantization.fake_quantize.FusedMovingAvgObsFakeQuantize'
+        return name == 'bst.torch.ao.quantization.fake_quantize.FakeQuantize' or \
+            name == 'bst.torch.ao.quantization.fake_quantize.FusedMovingAvgObsFakeQuantize'
     return False
 
 def disable_fake_quant(mod):

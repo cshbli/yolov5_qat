@@ -2,10 +2,10 @@ import torch.nn as nn
 import torch.nn.intrinsic as nni
 
 from typing import Union, Callable, Tuple, Dict, Optional, Type
-from torch.ao.quantization.utils import Pattern
+from bst.torch.ao.quantization.utils import Pattern
 
-from torch.ao.quantization.utils import get_combined_dict
-from torch.ao.quantization.utils import MatchAllNode
+from bst.torch.ao.quantization.utils import get_combined_dict
+from bst.torch.ao.quantization.utils import MatchAllNode
 import itertools
 
 def fuse_conv_bn(is_qat, conv, bn):

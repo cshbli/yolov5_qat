@@ -1,8 +1,8 @@
 import torch
-from torch.ao.quantization.qconfig import QConfig
-from torch.ao.quantization import MinMaxObserver
-from torch.ao.quantization.fake_quantize import FakeQuantize
-from torch.ao.quantization.experimental.fake_quantize import APoTFakeQuantize
+from bst.torch.ao.quantization.qconfig import QConfig
+from bst.torch.ao.quantization import MinMaxObserver
+from bst.torch.ao.quantization.fake_quantize import FakeQuantize
+from bst.torch.ao.quantization.experimental.fake_quantize import APoTFakeQuantize
 
 """
 Default symmetric fake_quant for activations.

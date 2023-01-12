@@ -45,8 +45,8 @@ def get_default_custom_config_dict():
     return _DEFAULT_CUSTOM_CONFIG_DICT
 
 def is_activation_post_process(module):
-    return (isinstance(module, torch.ao.quantization.ObserverBase) or
-            isinstance(module, torch.ao.quantization.FakeQuantizeBase))
+    return (isinstance(module, bst.torch.ao.quantization.ObserverBase) or
+            isinstance(module, bst.torch.ao.quantization.FakeQuantizeBase))
 
 
 def _propagate_qconfig_helper(module, qconfig_dict,

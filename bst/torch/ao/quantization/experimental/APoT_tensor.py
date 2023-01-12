@@ -1,5 +1,5 @@
 import torch
-from torch.ao.quantization.experimental.quantizer import APoTQuantizer
+from bst.torch.ao.quantization.experimental.quantizer import APoTQuantizer
 
 # class to store APoT quantized tensor
 class TensorAPoT():

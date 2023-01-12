@@ -8,24 +8,24 @@ import torch.nn.intrinsic as nni
 import torch.nn.intrinsic.quantized as nniq
 import torch.nn.intrinsic.quantized.dynamic as nniqd
 import torch.nn.intrinsic.qat as nniqat
-import torch.ao.nn.quantized as nnq
-import torch.ao.nn.quantized.reference as nnqr
-import torch.ao.nn.quantized.dynamic as nnqd
-import torch.ao.nn.qat as nnqat
-import torch.ao.nn.qat.dynamic as nnqatd
+import bst.torch.ao.nn.quantized as nnq
+import bst.torch.ao.nn.quantized.reference as nnqr
+import bst.torch.ao.nn.quantized.dynamic as nnqd
+import bst.torch.ao.nn.qat as nnqat
+import bst.torch.ao.nn.qat.dynamic as nnqatd
 
 from typing import Optional, Union, Dict, Set, Callable, Any
 
 # Because `torch.ao.nn` uses lazy imports, we need to make
 # sure we import the contents explicitly here.
-import torch.ao.nn.sparse
-import torch.ao.nn as ao_nn
-from torch.ao.quantization.stubs import QuantStub, DeQuantStub
-from torch.ao.quantization.fake_quantize import (
+import bst.torch.ao.nn.sparse
+import bst.torch.ao.nn as ao_nn
+from bst.torch.ao.quantization.stubs import QuantStub, DeQuantStub
+from bst.torch.ao.quantization.fake_quantize import (
     default_fixed_qparams_range_0to1_fake_quant,
     default_fixed_qparams_range_neg1to1_fake_quant,
 )
-from torch.ao.quantization.utils import get_combined_dict
+from bst.torch.ao.quantization.utils import get_combined_dict
 from torch.nn.utils.parametrize import type_before_parametrizations
 
 # Default map for swapping float module to reference quantized modules
