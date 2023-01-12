@@ -204,12 +204,14 @@ class UniformQuantizationObserverBase(ObserverBase):
         reduce_range=False,
         quant_min=None,
         quant_max=None,
+        pow2_scale=False,
         factory_kwargs=None,
         eps=torch.finfo(torch.float32).eps,
     ) -> None:
         factory_kwargs = torch.nn.factory_kwargs(factory_kwargs)
         super().__init__(dtype=dtype)
         self.qscheme = qscheme
+        self.pow2_scale=pow2_scale
         if reduce_range:
             warnings.warn(
                 "Please use quant_min and quant_max to specify the range for observers. \
@@ -311,41 +313,59 @@ class UniformQuantizationObserverBase(ObserverBase):
             return torch.tensor([1.0], device=min_val.device.type), torch.tensor([0], device=min_val.device.type)
 
         quant_min, quant_max = self.quant_min, self.quant_max
-        min_val_neg = torch.min(min_val, torch.zeros_like(min_val))
-        max_val_pos = torch.max(max_val, torch.zeros_like(max_val))
 
-        device = min_val_neg.device
-        scale = torch.ones(min_val_neg.size(), dtype=torch.float32, device=device)
-        zero_point = torch.zeros(min_val_neg.size(), dtype=torch.int64, device=device)
-
-        if (
-            self.qscheme == torch.per_tensor_symmetric
-            or self.qscheme == torch.per_channel_symmetric
-        ):
-            max_val_pos = torch.max(-min_val_neg, max_val_pos)
-            scale = max_val_pos / (float(quant_max - quant_min) / 2)
-            scale = torch.max(scale, self.eps)
-            if self.dtype == torch.quint8:
-                if self.has_customized_qrange:
-                    # When customized quantization range is used, down-rounded midpoint of the range is chosen.
-                    zero_point = zero_point.new_full(
-                        zero_point.size(), (quant_min + quant_max) // 2
-                    )
-                else:
-                    zero_point = zero_point.new_full(zero_point.size(), 128)
-        elif self.qscheme == torch.per_channel_affine_float_qparams:
-            scale = (max_val - min_val) / float(quant_max - quant_min)
-            scale = torch.where(scale > self.eps, scale, torch.ones_like(scale))
-            # We use the quantize function
-            # xq = Round(Xf * inv_scale + zero_point),
-            # setting zero_point to (-1 * min *inv_scale) we get
-            # Xq = Round((Xf - min) * inv_scale)
-            zero_point = -1 * min_val / scale
+        if (self.pow2_scale):
+            device = self.min_val.device 
+            max_v = torch.tensor(torch.maximum(abs(min_val), abs(max_val)), device=device)
+            # need to make sure max_v is none-zero
+            max_v = torch.where(max_v == 0.0, torch.ones_like(max_v), max_v)
+        
+            # power-of-two scale limitation
+            log2_max_v = torch.log2(max_v)
+            ceil_max_v = torch.ceil(log2_max_v)
+            pow2_max_v = torch.pow(2, ceil_max_v)
+        
+            quant_max = quant_max + 1
+        
+            # computer quant scale and zero point
+            scale = pow2_max_v / quant_max
+            zero_point = torch.zeros(self.min_val.size(), dtype=torch.int64, device=device)
         else:
-            scale = (max_val_pos - min_val_neg) / float(quant_max - quant_min)
-            scale = torch.max(scale, self.eps)
-            zero_point = quant_min - torch.round(min_val_neg / scale).to(torch.int)
-            zero_point = torch.clamp(zero_point, quant_min, quant_max)
+            min_val_neg = torch.min(min_val, torch.zeros_like(min_val))
+            max_val_pos = torch.max(max_val, torch.zeros_like(max_val))
+
+            device = min_val_neg.device
+            scale = torch.ones(min_val_neg.size(), dtype=torch.float32, device=device)
+            zero_point = torch.zeros(min_val_neg.size(), dtype=torch.int64, device=device)
+
+            if (
+                self.qscheme == torch.per_tensor_symmetric
+                or self.qscheme == torch.per_channel_symmetric
+            ):
+                max_val_pos = torch.max(-min_val_neg, max_val_pos)
+                scale = max_val_pos / (float(quant_max - quant_min) / 2)
+                scale = torch.max(scale, self.eps)
+                if self.dtype == torch.quint8:
+                    if self.has_customized_qrange:
+                        # When customized quantization range is used, down-rounded midpoint of the range is chosen.
+                        zero_point = zero_point.new_full(
+                            zero_point.size(), (quant_min + quant_max) // 2
+                        )
+                    else:
+                        zero_point = zero_point.new_full(zero_point.size(), 128)
+            elif self.qscheme == torch.per_channel_affine_float_qparams:
+                scale = (max_val - min_val) / float(quant_max - quant_min)
+                scale = torch.where(scale > self.eps, scale, torch.ones_like(scale))
+                # We use the quantize function
+                # xq = Round(Xf * inv_scale + zero_point),
+                # setting zero_point to (-1 * min *inv_scale) we get
+                # Xq = Round((Xf - min) * inv_scale)
+                zero_point = -1 * min_val / scale
+            else:
+                scale = (max_val_pos - min_val_neg) / float(quant_max - quant_min)
+                scale = torch.max(scale, self.eps)
+                zero_point = quant_min - torch.round(min_val_neg / scale).to(torch.int)
+                zero_point = torch.clamp(zero_point, quant_min, quant_max)
 
         # For scalar values, cast them to Tensors of size 1 to keep the shape
         # consistent with default values in FakeQuantize.
@@ -448,6 +468,7 @@ class MinMaxObserver(UniformQuantizationObserverBase):
         reduce_range=False,
         quant_min=None,
         quant_max=None,
+        pow2_scale=False,
         factory_kwargs=None,
         eps=torch.finfo(torch.float32).eps,
     ) -> None:
@@ -468,6 +489,7 @@ class MinMaxObserver(UniformQuantizationObserverBase):
             reduce_range=reduce_range,
             quant_min=quant_min,
             quant_max=quant_max,
+            pow2_scale=pow2_scale,
             factory_kwargs=factory_kwargs,
             eps=eps,
         )
@@ -566,6 +588,7 @@ class MovingAverageMinMaxObserver(MinMaxObserver):
         reduce_range=False,
         quant_min=None,
         quant_max=None,
+        pow2_scale=False,
         eps=torch.finfo(torch.float32).eps,
         **kwargs
     ) -> None:
@@ -581,6 +604,7 @@ class MovingAverageMinMaxObserver(MinMaxObserver):
             reduce_range=reduce_range,
             quant_min=quant_min,
             quant_max=quant_max,
+            pow2_scale=pow2_scale,
             eps=eps,
             **kwargs
         )
@@ -641,6 +665,7 @@ class PerChannelMinMaxObserver(UniformQuantizationObserverBase):
         reduce_range=False,
         quant_min=None,
         quant_max=None,
+        pow2_scale=False,
         factory_kwargs=None,
         eps=torch.finfo(torch.float32).eps,
     ) -> None:
@@ -655,6 +680,7 @@ class PerChannelMinMaxObserver(UniformQuantizationObserverBase):
             reduce_range=reduce_range,
             quant_min=quant_min,
             quant_max=quant_max,
+            pow2_scale=pow2_scale,
             factory_kwargs=factory_kwargs,
             eps=eps,
         )
@@ -833,6 +859,7 @@ class MovingAveragePerChannelMinMaxObserver(PerChannelMinMaxObserver):
         reduce_range=False,
         quant_min=None,
         quant_max=None,
+        pow2_scale=False,
         eps=torch.finfo(torch.float32).eps,
         **kwargs
     ) -> None:
@@ -848,6 +875,7 @@ class MovingAveragePerChannelMinMaxObserver(PerChannelMinMaxObserver):
             reduce_range=reduce_range,
             quant_min=quant_min,
             quant_max=quant_max,
+            pow2_scale=pow2_scale,
             eps=eps,
             **kwargs
         )

@@ -4,6 +4,8 @@
 
 **This repo is based on the release v7.0 of [yolov5](https://github.com/ultralytics/yolov5/).**
 
+**This repo cloned PyTorch torch.ao source code package here (v1.13.0, except torch.ao.sparisity) and modified it as bst.torch.ao**
+
 ## 1 Setup
 
 ### 1.1 Clone the Sample  
@@ -249,3 +251,38 @@ Starting training for 20 epochs...
 ### Experiment 2: Quantization with Conv+BN+ReLU, skip_add and Concat
 
 Please see the quantized model structure here: [Quantized mode structure](./qat_model.txt)
+
+```
+python train.py --data coco.yaml --epochs 5 --cfg models/yolov5m.yaml --weights runs/train/relu/weights/best.pt --hyp data/hyps/hyp.qat.yaml --batch-size 32 --qat --device 0
+```
+
+Result log:
+
+```
+Starting training for 5 epochs...
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        0/4      10.1G    0.03884     0.0563    0.01274        199        640: 100%|██████████| 3697/3697 [48:22<00:00,  1.27it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:36<00:00,  1.22s/it]
+                   all       5000      36335      0.704       0.56      0.612      0.414
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        1/4      9.58G    0.03882    0.05622    0.01259        168        640: 100%|██████████| 3697/3697 [47:57<00:00,  1.28it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:33<00:00,  1.19s/it]
+                   all       5000      36335      0.713      0.562      0.615      0.415
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        2/4        11G    0.03875     0.0561    0.01242        163        640: 100%|██████████| 3697/3697 [47:09<00:00,  1.31it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:33<00:00,  1.18s/it]
+                   all       5000      36335      0.709       0.56      0.611      0.413
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        3/4        11G    0.03867     0.0561    0.01234        125        640: 100%|██████████| 3697/3697 [47:06<00:00,  1.31it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:33<00:00,  1.19s/it]
+                   all       5000      36335      0.707      0.562      0.614      0.416
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        4/4        11G    0.03865    0.05587    0.01233        216        640: 100%|██████████| 3697/3697 [47:00<00:00,  1.31it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:33<00:00,  1.19s/it]
+                   all       5000      36335      0.706      0.562      0.613      0.415
+```
