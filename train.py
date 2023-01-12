@@ -134,8 +134,8 @@ def prepare_qat_model(model, device, backend='default'):
                         mchild.i = 22
                         mchild.f = [-1, 10]
         
-        # # 4) [bst_alignment] link model observers
-        # prepared_model = quantizer.link_modules(prepared_model, auto_detect=True, input_tensor=sample_data.to('cpu'), inplace=False)    
+        # 4) [bst_alignment] link model observers
+        prepared_model = quantizer.link_modules(prepared_model, auto_detect=True, input_tensor=sample_data.to('cpu'), inplace=False)    
     
         prepared_model.to(device)
 
@@ -426,11 +426,16 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             # end batch ------------------------------------------------------------------------------------------------
 
             if opt.qat and epoch == 0:
+                import bstnnx_training.PyTorch.QAT.core as quantizer
+
                 # Freeze quantizer parameters
                 model.apply(torch.quantization.disable_observer)
 
-                # # Extra step: to align hardware, it will only be applied once for unaligned model
-                # quantizer.align_bst_hardware(model, sample_data)
+                # define one sample data used for fusing model
+                sample_data = torch.randn(1, 3, 640, 640, requires_grad=True)
+
+                # Extra step: to align hardware, it will only be applied once for unaligned model
+                quantizer.align_bst_hardware(model, sample_data)
                 
                 # Freeze batch norm mean and variance estimates
                 model.apply(torch.nn.intrinsic.qat.freeze_bn_stats)
@@ -499,14 +504,13 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
                 torch.save(ckpt, last)
                 if best_fitness == fi:
                     torch.save(ckpt, best)
-                    # if opt.qat:
-                    #     sample_data = torch.randn(1, 3, 640, 640, requires_grad=True)
-                    #     stage_dict={}
-                    #     stage_dict['simplify_onnx'] = True
-                    #     onnx_model_path, quant_param_json_path = quantizer.export_onnx(model, 
-                    #                                                     sample_data, 
-                    #                                                     stage_dict=stage_dict, 
-                    #                                                     result_dir=w)
+                    if opt.qat:
+                        stage_dict={}
+                        stage_dict['simplify_onnx'] = True
+                        onnx_model_path, quant_param_json_path = quantizer.export_onnx(model, 
+                                                                        sample_data, 
+                                                                        stage_dict=stage_dict, 
+                                                                        result_dir=w)
                 if opt.save_period > 0 and epoch % opt.save_period == 0:
                     torch.save(ckpt, w / f'epoch{epoch}.pt')
                 del ckpt
