@@ -121,7 +121,7 @@ python train.py --data coco.yaml --epochs 50 --weights weights/yolov5m.pt --hyp 
                    all       5000      36335      0.707      0.569      0.619      0.431
 ```
 
-Here is the complete retraining log file [retraining after replacing SiLU with ReLU](./relu_retraining.csv).
+Here is the complete retraining log file [retraining after replacing SiLU with ReLU](./notes/relu_retraining.csv).
 
 Assuming the retraining result folder name is changed to **relu**, run validation test:
 
@@ -205,7 +205,7 @@ DONE (t=10.45s).
 
 PyTorch QAT flow:
 
-<img src="pytorch_qat_flow.png">
+<img src="./notes/pytorch_qat_flow.png">
 
 ### Experiment 1: Quantization with Conv+BN+ReLU only
 
@@ -250,7 +250,7 @@ Starting training for 20 epochs...
 
 ### Experiment 2: Quantization with Conv+BN+ReLU, skip_add and Concat
 
-Please see the quantized model structure here: [Quantized mode structure](./qat_model.txt)
+Please see the quantized model structure here: [Quantized mode structure](./notes/torch_qat_model.txt)
 
 ```
 python train.py --data coco.yaml --epochs 5 --cfg models/yolov5m.yaml --weights runs/train/relu/weights/best.pt --hyp data/hyps/hyp.qat.yaml --batch-size 32 --qat --device 0

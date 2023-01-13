@@ -68,7 +68,7 @@ WORLD_SIZE = int(os.getenv('WORLD_SIZE', 1))
 
 def prepare_qat_model(model, opt):
     # Fuse modules for QAT
-    model.eval()
+    model.train()
     model.fuse_model()
 
     import bst.torch.ao.quantization as quantizer
@@ -84,7 +84,6 @@ def prepare_qat_model(model, opt):
     model.qconfig = quantizer.QConfig(activation=activation_quant, weight=weight_quant)
 
     # prepare qat model using qconfig settings
-    model.train()
     quantizer.prepare_qat(model, inplace=True)
 
     return model
@@ -371,15 +370,17 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
                     return
             # end batch ------------------------------------------------------------------------------------------------
 
-            if opt.qat and epoch == 0:
+            if opt.qat:                
                 # Freeze quantizer parameters
-                model.apply(torch.quantization.disable_observer)
+                if epoch > 3:
+                    model.apply(torch.quantization.disable_observer)
 
                 # # Extra step: to align hardware, it will only be applied once for unaligned model
                 # quantizer.align_bst_hardware(model, sample_data)
                 
                 # Freeze batch norm mean and variance estimates
-                model.apply(torch.nn.intrinsic.qat.freeze_bn_stats)
+                if epoch > 2:
+                    model.apply(torch.nn.intrinsic.qat.freeze_bn_stats)
 
         # Scheduler
         lr = [x['lr'] for x in optimizer.param_groups]  # for loggers

@@ -282,7 +282,8 @@ class DetectionModel(BaseModel):
     def fuse_model(self):
         for m in self.modules():
             if type(m) == Conv:
-                quantizer.fuse_modules(m, ['conv', 'bn', 'act'], inplace=True)
+                # For QAT, we have to use fuse_modules_qat() instead of fuse_modules()
+                quantizer.fuse_modules_qat(m, ['conv', 'bn', 'act'], inplace=True)
                 # torch.ao.quantization.fuse_modules(m, ['conv', 'bn'], inplace=True)
 
 
