@@ -286,3 +286,9 @@ Starting training for 5 epochs...
                  Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:33<00:00,  1.19s/it]
                    all       5000      36335      0.706      0.562      0.613      0.415
 ```
+
+### Experiment 3: Fusing with fuse_modules_qat() and disable observers after epoch 3, freeze BN after epoch 2
+
+```
+python train.py --data coco.yaml --epochs 20 --cfg models/yolov5m.yaml --weights runs/train/relu/weights/best.pt --hyp data/hyps/hyp.m-relu-tune.yaml --batch-size 16 --qat --device 0
+```
