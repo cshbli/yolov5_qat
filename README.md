@@ -4,6 +4,73 @@
 
 **This repo is based on the release v7.0 of [yolov5](https://github.com/ultralytics/yolov5/).**
 
+## 0. Prepare Environment
+
+- This version QAT requires PyTorch version 1.9.1.
+  - For YOLOv5, before install requirements.txt, please install torchvision version 0.10.1 first
+    ```
+    pip install torchvision==0.10.1
+    pip install -r requirements.txt  
+    ```
+
+### 0.1 Create a virtual environment with PyTorch 1.9.1
+
+```
+python3 -m venv ./venv/torch1.9.1
+
+source ~/venv/torch1.9.1/bin/activate
+
+pip install setuptools numpy==1.23.5
+
+pip install torch==1.9.1
+
+pip install torchvision==0.10.1
+```
+
+### 0.2 QAT setup
+
+- Remove the Tensorflow installation
+
+```
+install_requires.extend([
+    'torch==1.9.1',
+    'torchviz',
+    'onnx==1.9.0',
+    'onnxoptimizer==0.2.6',
+    'onnxruntime-gpu==1.9.0',
+    'tf2onnx==1.9.2',
+    # 'tensorflow==1.15.2',
+    'tqdm'
+])
+```
+
+- Setup
+```
+pip install Cython
+
+python setup.py develop
+```
+
+- In case there are some errors:
+```
+AttributeError: module 'numpy' has no attribute 'object'
+```
+
+It seems numpy 1.24.0 has some errors. Try:
+```
+pip install numpy==1.23.5
+
+1 - pip uninstall -y numpy
+2 - pip uninstall -y setuptools
+3 - pip install setuptools
+4 - pip install numpy
+```
+
+### 0.3 YOLOv5 installation
+```
+pip install -r requirements.txt
+```
+
 ## 1 Setup
 
 ### 1.1 Clone the Sample  
@@ -70,7 +137,7 @@ Outputs:
  Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.777
 ```
 
-### 1.4 Replacing SiLU with ReLU (Optional)
+### 1.4 Replacing SiLU with ReLU
 
 - Make sure to change the learning rate, otherwise it will long time to converge.
   - We use a new hyps yaml here [hyp.m-relu-tune.yaml](./hyp.m-relu-tune.yaml). It is based on `hyp.scratch-low.yaml`, changed lr to smaller value.
@@ -119,7 +186,7 @@ python train.py --data coco.yaml --epochs 50 --weights weights/yolov5m.pt --hyp 
                    all       5000      36335      0.707      0.569      0.619      0.431
 ```
 
-Here is the complete retraining log file [retraining after replacing SiLU with ReLU](./relu_retraining.csv).
+Here is the complete retraining log file [retraining after replacing SiLU with ReLU](./notes/relu_retraining.csv).
 
 Assuming the retraining result folder name is changed to **relu**, run validation test:
 
@@ -199,16 +266,23 @@ DONE (t=10.45s).
  Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.763
 ```
 
-## QAT
+### 1.6 Code changes
 
-PyTorch QAT flow:
+Please refer to all related code changes here [code change log](./notes/bst_code_changes.md).
 
-<img src="pytorch_qat_flow.png">
+## 2. QAT
+
+BST QAT flow chart:
+
+<img src="notes/bst_qat_flow.png">
 
 ### Experiment 1: Quantization with Conv+BN+ReLU, skip_add and Concat
 
 - QAT can't use multiple GPUs. We need to specify the device ID.
-- Please see the quantized model structure here: [Quantized mode structure](./qat_model.txt)
+- Please see the quantized model structure here: [Quantized mode structure](./notes/bst_qat_model.txt)
+
+- Stop observers after epoch 0.
+- Power of 2 scale with rounding. 
 
 ```
 python train.py --data coco.yaml --epochs 20 --cfg models/yolov5m.yaml \
