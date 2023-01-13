@@ -287,8 +287,110 @@ Starting training for 5 epochs...
                    all       5000      36335      0.706      0.562      0.613      0.415
 ```
 
-### Experiment 3: Fusing with fuse_modules_qat() and disable observers after epoch 3, freeze BN after epoch 2
+### Experiment 3: Fusing with fuse_modules_qat()
+
+- disable observers after epoch 3, 
+- freeze BN after epoch 2
 
 ```
 python train.py --data coco.yaml --epochs 20 --cfg models/yolov5m.yaml --weights runs/train/relu/weights/best.pt --hyp data/hyps/hyp.m-relu-tune.yaml --batch-size 16 --qat --device 0
+```
+
+It took so long time, interrupted it without finishing. Without pow-of-2 scale, no norm clipping errors.
+
+```
+Starting training for 20 epochs...
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       0/19      12.6G    0.03884    0.05708    0.01363        199        640: 100%|██████████| 7393/7393 [1:28:24<00:00,  1.39it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 157/157 [01:45<00:00,  1.49it/s]
+                   all       5000      36335      0.702      0.556      0.608       0.41
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       1/19      11.8G    0.03917    0.05746    0.01386        168        640: 100%|██████████| 7393/7393 [1:27:38<00:00,  1.41it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 157/157 [01:44<00:00,  1.51it/s]
+                   all       5000      36335      0.703       0.55      0.602      0.402
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       2/19      11.8G    0.03964    0.05816    0.01432        163        640: 100%|██████████| 7393/7393 [1:27:28<00:00,  1.41it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 157/157 [01:44<00:00,  1.50it/s]
+                   all       5000      36335      0.681      0.549      0.592      0.394
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       3/19      11.8G    0.04064    0.06019    0.01533        125        640: 100%|██████████| 7393/7393 [1:22:53<00:00,  1.49it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 157/157 [01:43<00:00,  1.51it/s]
+                   all       5000      36335       0.67      0.545      0.584      0.385
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       4/19      11.8G    0.04063    0.05992    0.01518        216        640: 100%|██████████| 7393/7393 [1:23:09<00:00,  1.48it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 157/157 [01:44<00:00,  1.50it/s]
+                   all       5000      36335      0.677       0.54      0.585      0.388
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       5/19      11.8G    0.04056    0.05971     0.0149        100        640: 100%|██████████| 7393/7393 [1:23:15<00:00,  1.48it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 157/157 [01:44<00:00,  1.50it/s]
+                   all       5000      36335      0.686      0.538      0.583      0.383
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       6/19      11.8G     0.0405    0.05938    0.01473        172        640: 100%|██████████| 7393/7393 [1:23:10<00:00,  1.48it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 157/157 [01:45<00:00,  1.49it/s]
+                   all       5000      36335      0.691      0.533      0.586      0.388
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       7/19      11.8G    0.04032    0.05914    0.01447        144        640: 100%|██████████| 7393/7393 [1:23:21<00:00,  1.48it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 157/157 [01:45<00:00,  1.49it/s]
+                   all       5000      36335      0.695      0.533      0.589      0.391
+```
+
+After `model.apply(torch.nn.intrinsic.qat.freeze_bn_stats)`, the `bn` module still there. 
+
+```
+(0): Conv(
+      (conv): ConvBnReLU2d(
+        3, 48, kernel_size=(6, 6), stride=(2, 2), padding=(2, 2), bias=False
+        (bn): BatchNorm2d(48, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+        (weight_fake_quant): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([0.07318, 0.03827, 0.00931, 0.07918, 0.00856, 0.02615, 0.02644, 0.00580, 0.07948, 0.07856, 0.01358, 0.07286, 0.11802, 0.00947, 0.00621, 0.15930, 0.02178, 0.02384, 0.04032, 0.00908, 0.06376, 0.01253, 0.07374, 0.13870, 0.01086, 0.14563, 0.00494, 0.01516, 0.01211, 0.01559, 0.02785, 0.03160, 0.01187, 0.00399,
+                  0.03620, 0.07443, 0.02354, 0.02609, 0.00943, 0.09781, 0.01717, 0.07993, 0.00588, 0.08158, 0.14655, 0.09606, 0.05100, 0.07838], device='cuda:0'), zero_point=tensor([ 18,   1,  -1,  45, -16,  14,  10,  12,  29,  -8,  -8,  -1,  -8, -16, -80,  23, -26,   7, -35, -13,   0,  67,   1, -44,   2,   4, -10,  61,  43,   6,  89, -18,  50,  11, -22,  10,  17,   5,  43, -26,  -5,  10, -61,  -4,   2, -33,   4,   0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAveragePerChannelMinMaxObserver(
+            min_val=tensor([-10.65063,  -4.93249,  -1.18001, -13.68599,  -0.95966,  -3.72520,  -3.64081,  -0.81462, -12.44964,  -9.43243,  -1.63064,  -9.24742, -14.21692,  -1.06421,  -0.29582, -24.01820,  -2.21496,  -3.22655,  -3.76285,  -1.04305,  -8.17518,  -2.44253,  -9.50966, -11.60251,  -1.41122, -19.26103,  -0.58348,  -2.86479,
+                     -2.07327,  -2.09483,  -6.03711,  -3.47253,  -2.11597,  -0.55697,  -3.82605, -10.30249,  -3.42061,  -3.47472,  -1.61023, -10.01875,  -2.11631, -11.01746,  -0.39645, -10.08113, -19.06150,  -9.11710,  -6.74680, -10.01476], device='cuda:0'), max_val=tensor([ 8.01079,  4.82636,  1.19482,  6.50495,  1.22355,  2.94232,  3.10047,  0.66518,  7.81720, 10.60047,  1.83312,  9.33208, 15.87757,  1.35130,  1.28704, 16.60271,  3.33993,  2.85190,  6.51895,  1.27132,  8.08352,  0.75302,  9.29514, 23.76608,  1.35826, 17.87459,  0.67674,  1.00224,  1.01483,  1.88001,  1.06495,
+                     4.58567,  0.91181,  0.46128,  5.40406,  8.67651,  2.58116,  3.17756,  0.79474, 14.92204,  2.26226,  9.36579,  1.10322, 10.72223, 18.30954, 15.37844,  6.25710,  9.97108], device='cuda:0')
+          )
+        )
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([0.22964], device='cuda:0'), zero_point=tensor([-128], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=0.0, max_val=58.55785369873047)
+        )
+      )
+      (bn): Identity()
+      (act): Identity()
+    )
+```
+
+After `model.apply(bst.torch.ao.quantization.disable_observer)`, we can see that the `observer_enabled=tensor([0], ...)`.
+The observers have been disabled.
+
+```
+(0): Conv(
+      (conv): ConvBnReLU2d(
+        3, 48, kernel_size=(6, 6), stride=(2, 2), padding=(2, 2), bias=False
+        (bn): BatchNorm2d(48, eps=0.001, momentum=0.03, affine=True, track_running_stats=True)
+        (weight_fake_quant): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([0], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, ch_axis=0, scale=tensor([0.07331, 0.03867, 0.00934, 0.07935, 0.00863, 0.02616, 0.02665, 0.00582, 0.07965, 0.07873, 0.01362, 0.07299, 0.11912, 0.00952, 0.00623, 0.16135, 0.02160, 0.02389, 0.04041, 0.00911, 0.06393, 0.01258, 0.07389, 0.14019, 0.01089, 0.14575, 0.00496, 0.01522, 0.01216, 0.01568, 0.02796, 0.03169, 0.01192, 0.00401,
+                  0.03659, 0.07457, 0.02335, 0.02628, 0.00946, 0.09795, 0.01730, 0.08016, 0.00590, 0.08168, 0.14671, 0.09618, 0.05119, 0.07854], device='cuda:0'), zero_point=tensor([ 18,   1,  -1,  45, -16,  14,  10,  12,  29,  -8,  -8,  -1,  -8, -16, -80,  23, -26,   7, -35, -13,   0,  67,   1, -44,   2,   4, -10,  61,  43,   6,  89, -18,  50,  11, -22,  10,  17,   5,  43, -26,  -5,  10, -61,  -4,   2, -33,   4,   0], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAveragePerChannelMinMaxObserver(
+            min_val=tensor([-10.66981,  -4.98426,  -1.18403, -13.71564,  -0.96688,  -3.72640,  -3.67082,  -0.81762, -12.47712,  -9.45249,  -1.63513,  -9.26342, -14.35015,  -1.06918,  -0.29694, -24.32773,  -2.19594,  -3.23318,  -3.77087,  -1.04657,  -8.19696,  -2.45208,  -9.52907, -11.72691,  -1.41538, -19.27718,  -0.58541,  -2.87487,
+                     -2.08114,  -2.10745,  -6.05982,  -3.48210,  -2.12423,  -0.55878,  -3.86759, -10.32190,  -3.39415,  -3.50061,  -1.61554, -10.03309,  -2.13274, -11.04923,  -0.39790, -10.09288, -19.08138,  -9.12878,  -6.77292, -10.03563], device='cuda:0'), max_val=tensor([ 8.02522,  4.87703,  1.19890,  6.51904,  1.23276,  2.94327,  3.12603,  0.66763,  7.83446, 10.62303,  1.83816,  9.34824, 16.02649,  1.35762,  1.29193, 16.81664,  3.31118,  2.85776,  6.53287,  1.27560,  8.10504,  0.75596,  9.31414, 24.02091,  1.36227, 17.88959,  0.67897,  1.00577,  1.01869,  1.89133,  1.06895,
+                     4.59831,  0.91537,  0.46278,  5.46271,  8.69283,  2.56121,  3.20123,  0.79736, 14.94346,  2.27981,  9.39281,  1.10725, 10.73469, 18.32862, 15.39817,  6.28133,  9.99185], device='cuda:0')
+          )
+        )
+        (activation_post_process): FakeQuantize(
+          fake_quant_enabled=tensor([1], device='cuda:0', dtype=torch.uint8), observer_enabled=tensor([0], device='cuda:0', dtype=torch.uint8), quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, ch_axis=-1, scale=tensor([0.23192], device='cuda:0'), zero_point=tensor([-128], device='cuda:0', dtype=torch.int32)
+          (activation_post_process): MovingAverageMinMaxObserver(min_val=0.0, max_val=59.1402473449707)
+        )
+      )
+      (bn): Identity()
+      (act): Identity()
+    )
 ```

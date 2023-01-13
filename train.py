@@ -373,7 +373,8 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
             if opt.qat:                
                 # Freeze quantizer parameters
                 if epoch > 3:
-                    model.apply(torch.quantization.disable_observer)
+                    import bst
+                    model.apply(bst.torch.ao.quantization.disable_observer)
 
                 # # Extra step: to align hardware, it will only be applied once for unaligned model
                 # quantizer.align_bst_hardware(model, sample_data)
