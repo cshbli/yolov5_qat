@@ -237,3 +237,21 @@ class Detect(nn.Module):
 
         return x if self.training else (torch.cat(z, 1),) if self.export else (torch.cat(z, 1), x)
 ```
+
+## 3. utils/torch_utils.py
+
+BST QAT has issues with ReLU inplace.
+
+```
+def initialize_weights(model):
+    for m in model.modules():
+        t = type(m)
+        if t is nn.Conv2d:
+            pass  # nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+        elif t is nn.BatchNorm2d:
+            m.eps = 1e-3
+            m.momentum = 0.03
+        elif t in [nn.Hardswish, nn.LeakyReLU, nn.ReLU, nn.ReLU6, nn.SiLU]:
+            # m.inplace = True
+            m.inplace = False
+```

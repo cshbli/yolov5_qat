@@ -276,6 +276,29 @@ BST QAT flow chart:
 
 <img src="notes/bst_qat_flow.png">
 
+### Model fusing debug and pre-bind debug
+
+We can turn on the `debug_mode=True` to print out the model structure while doing `fuse_modules`.
+
+```
+# use CPU on input_tensor as our backend for parsing GraphTopology forced model to be on CPU    
+model = quantizer.fuse_modules(model, auto_detect=True, debug_mode=False, input_tensor=sample_data.to('cpu'))
+```
+
+The example [fuse modules pdf printout](./notes/fuse_modules_debug.gv.pdf).
+
+We can turn on the `debug_mode=True` to print out the model structure while doing `pre_bind`.
+
+```
+# 1) [bst_alignment] get b0 pre-bind qconfig adjusting Conv's activation quant scheme
+pre_bind_qconfig = quantizer.pre_bind(model, input_tensor=sample_data.to('cpu'), debug_mode=False,
+    observer_scheme_dict={"weight_scheme": "MovingAveragePerChannelMinMaxObserver", 
+                          "activation_scheme": "MovingAverageMinMaxObserver"})
+```
+
+The example [pre-bind pdf printout](./notes/pre_bind_debug.gv.pdf).
+
+
 ### Experiment 1: Quantization with Conv+BN+ReLU, skip_add and Concat
 
 - QAT can't use multiple GPUs. We need to specify the device ID.
