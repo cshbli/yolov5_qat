@@ -338,3 +338,83 @@ Starting training for 20 epochs...
                  Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:00<00:00,  1.31it/s]
                    all       5000      36335      0.686      0.556      0.602       0.39
 ```
+
+### Experiment 2: Quantization with full pipeline, Conv+BN+ReLU, skip_add and Concat, and alignment
+
+- QAT can't use multiple GPUs. We need to specify the device ID.
+- Please see the quantized model structure here: [Quantized mode structure](./notes/bst_qat_model.txt)
+
+- Stop observers after epoch 0, free batch norm after epoch 0
+- Power of 2 scale with rounding. 
+
+```
+python train.py --data coco.yaml --epochs 20 --cfg models/yolov5m.yaml \
+--weights runs/train/relu/weights/best.pt --hyp data/hyps/hyp.m-relu-tune.yaml \
+--batch-size 32 --qat --device 1
+```
+
+Result log: 
+
+```
+Starting training for 20 epochs...
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size       
+       0/19      14.6G    0.04198    0.05757     0.0138        199        640: 100%|██████████| 3697/3697 [37:51<00:00,  1.63it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:02<00:00,  1.26it/s
+                   all       5000      36335      0.691      0.551      0.598      0.387
+                   
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size       
+       1/19      23.1G     0.0422    0.05728    0.01337        169        640: 100%|██████████| 3697/3697 [36:44<00:00,  1.68it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:00<00:00,  1.30it/s]
+                   all       5000      36335      0.693      0.546      0.599      0.381
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size       
+       2/19      23.1G    0.04257    0.05747    0.01341        144        640: 100%|██████████| 3697/3697 [36:40<00:00,  1.68it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:01<00:00,  1.29
+                   all       5000      36335       0.68      0.545       0.59      0.372
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       3/19      23.1G     0.0426    0.05772    0.01357        149        640: 100%|██████████| 3697/3697 [36:38<00:00,  1.68it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:00<00:00,  1.30
+                   all       5000      36335      0.684      0.547      0.595      0.375
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size       
+       4/19      23.1G    0.04255    0.05764    0.01357        197        640: 100%|██████████| 3697/3697 [36:40<00:00,  1.68it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:01<00:00,  1.29
+                   all       5000      36335      0.693      0.543      0.595       0.38
+      
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      10/19      23.1G    0.04202    0.05711    0.01304        180        640: 100%|██████████| 3697/3697 [36:35<00:00,  1.68it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:01<00:00,  1.29
+                   all       5000      36335      0.687      0.556      0.602      0.387
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      13/19      23.1G    0.04181    0.05672    0.01283        198        640: 100%|██████████| 3697/3697 [36:30<00:00,  1.69it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:00<00:00,  1.30
+                   all       5000      36335      0.686      0.553        0.6      0.389
+                   
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      15/19      23.1G    0.04173    0.05668    0.01279        183        640: 100%|██████████| 3697/3697 [36:37<00:00,  1.68it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:00<00:00,  1.30
+                   all       5000      36335      0.702      0.552      0.604      0.391
+      
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      16/19      23.1G    0.04159    0.05661    0.01271        228        640: 100%|██████████| 3697/3697 [36:35<00:00,  1.68it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:00<00:00,  1.30
+                   all       5000      36335        0.7      0.548      0.601      0.386
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      17/19      23.1G    0.04152    0.05646    0.01263        176        640: 100%|██████████| 3697/3697 [36:30<00:00,  1.69it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:00<00:00,  1.30
+                   all       5000      36335      0.696      0.553      0.602      0.393
+      
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      18/19      23.1G    0.04144    0.05639    0.01257        216        640: 100%|██████████| 3697/3697 [36:38<00:00,  1.68it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:00<00:00,  1.30
+                   all       5000      36335      0.684       0.56      0.602       0.39
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      19/19      23.1G    0.04138    0.05634     0.0125        198        640: 100%|██████████| 3697/3697 [36:37<00:00,  1.68it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:00<00:00,  1.30
+                   all       5000      36335      0.701      0.555      0.606      0.394
+```
