@@ -34,8 +34,6 @@ from utils.plots import Annotator, colors, save_one_box
 from utils.torch_utils import copy_attr, smart_inference_mode
 
 from bstnnx_training.PyTorch.QAT import modules as bstnn
-# We are going to replace Concat module with BstConcat. QAT will quantize BstConcat
-from bstnnx_training.PyTorch.QAT.modules import BstConcat 
 
 def autopad(k, p=None, d=1):  # kernel, padding, dilation
     # Pad to 'same' shape outputs
@@ -316,22 +314,17 @@ class Expand(nn.Module):
         return x.view(b, c // s ** 2, h * s, w * s)  # x(1,16,160,160)
 
 
-# bstnn.CatChannel takes multiple tensors as inputs
-# bstnn.BstConcat takes one tensor array as the input
-# We can't reuse bstnn.CatChannel here and have to redefine another module in QAT software package
-Concat = BstConcat
+class Concat(nn.Module):
+    # Concatenate a list of tensors along dimension
+    def __init__(self, dimension=1):
+        super().__init__()
+        self.d = dimension
 
-# class Concat(nn.Module):
-#     # Concatenate a list of tensors along dimension
-#     def __init__(self, dimension=1):
-#         super().__init__()
-#         self.d = dimension
+        self.concat = bstnn.CatChannel()
 
-#         self.concat = nn.quantized.FloatFunctional()
-
-#     def forward(self, x):
-#         # return torch.cat(x, self.d)  
-#         return self.concat.cat(x, self.d)
+    def forward(self, x):
+        # return torch.cat(x, self.d)
+        return self.concat(*x)
 
 
 class DetectMultiBackend(nn.Module):

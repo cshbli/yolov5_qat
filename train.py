@@ -118,22 +118,6 @@ def prepare_qat_model(model, device, backend='default'):
         # 3) prepare qat model using qconfig settings
         prepared_model = quantizer.prepare_qat(model, inplace=False)
 
-        for name, m in prepared_model.named_children():            
-            if name == 'model':
-                for n, mchild in m.named_children():                    
-                    if n == "12":
-                        mchild.i = 12
-                        mchild.f = [-1, 6]                        
-                    elif n == "16":
-                        mchild.i = 16
-                        mchild.f = [-1, 4]
-                    elif n == "19":
-                        mchild.i = 19
-                        mchild.f = [-1, 14]
-                    elif n == "22":
-                        mchild.i = 22
-                        mchild.f = [-1, 10]
-        
         # 4) [bst_alignment] link model observers
         prepared_model = quantizer.link_modules(prepared_model, auto_detect=True, input_tensor=sample_data.to('cpu'), inplace=False)    
     

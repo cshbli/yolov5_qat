@@ -86,27 +86,18 @@ class C3(nn.Module):
             return self.cv2(self.concat(x, y1, y2, self.m(y2)))
 ```
 
-### 1.4 Replacing Concat module with bstnn.BstConcat module
-
-- This is the most confusing part. It caused lots of trouble. It requires QAT softmare to make related changes also.
-  - bstnn.CatChannel with multiple tensors as inputs
-  - bstnn.BstConcat with one tensor list as the input.
-
-
 ```
-# bstnn.CatChannel takes multiple tensors as inputs
-# bstnn.BstConcat takes one tensor array as the input
-# We can't reuse bstnn.CatChannel here and have to redefine another module in QAT software package
-Concat = BstConcat
+class Concat(nn.Module):
+    # Concatenate a list of tensors along dimension
+    def __init__(self, dimension=1):
+        super().__init__()
+        self.d = dimension
 
-# class Concat(nn.Module):
-#     # Concatenate a list of tensors along dimension
-#     def __init__(self, dimension=1):
-#         super().__init__()
-#         self.d = dimension
+        self.concat = bstnn.CatChannel()
 
-#     def forward(self, x):
-#         return torch.cat(x, self.d)
+    def forward(self, x):
+        # return torch.cat(x, self.d)
+        return self.concat(*x)
 ```
 
 ## 2 yolo.py
