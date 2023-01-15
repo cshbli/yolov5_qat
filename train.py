@@ -68,8 +68,7 @@ WORLD_SIZE = int(os.getenv('WORLD_SIZE', 1))
 
 def prepare_qat_model(model, opt):
     # Fuse modules for QAT
-    model.train()
-    model.fuse_model()
+    model.fuse_model(bn_folding=opt.bn_folding)
 
     import bst.torch.ao.quantization as quantizer
 
@@ -372,7 +371,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
 
             if opt.qat:                
                 # Freeze quantizer parameters
-                if epoch > 3:
+                if epoch >= opt.disable_observer_epoch:
                     import bst
                     model.apply(bst.torch.ao.quantization.disable_observer)
 
@@ -380,7 +379,7 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
                 # quantizer.align_bst_hardware(model, sample_data)
                 
                 # Freeze batch norm mean and variance estimates
-                if epoch > 2:
+                if epoch >= opt.freeze_bn_epoch:
                     model.apply(torch.nn.intrinsic.qat.freeze_bn_stats)
 
         # Scheduler
@@ -548,6 +547,9 @@ def parse_opt(known=False):
     # QAT
     parser.add_argument('--qat', action='store_true', help='Enable PyTorch QAT')
     parser.add_argument('--pow2-scale', action='store_true', help='Enable Pow of 2 scales')
+    parser.add_argument('--bn-folding', action='store_true', help='Folding BatchNorm first')
+    parser.add_argument('--disable-observer-epoch', type=int, default=0, help='Disable observers after which batch')
+    parser.add_argument('--freeze-bn-epoch', type=int, default=0, help='Freeze BatchNorm after which batch')
 
     return parser.parse_known_args()[0] if known else parser.parse_args()
 

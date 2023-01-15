@@ -279,13 +279,22 @@ class DetectionModel(BaseModel):
             b.data[:, 5:5 + m.nc] += math.log(0.6 / (m.nc - 0.99999)) if cf is None else torch.log(cf / cf.sum())  # cls
             mi.bias = torch.nn.Parameter(b.view(-1), requires_grad=True)
 
-    def fuse_model(self):
+    def fuse_model(self, bn_folding=False):
+        mode = self.training
+        if bn_folding:
+            self.eval()
+
         for m in self.modules():
             if type(m) == Conv:
-                # For QAT, we have to use fuse_modules_qat() instead of fuse_modules()
-                quantizer.fuse_modules_qat(m, ['conv', 'bn', 'act'], inplace=True)
-                # torch.ao.quantization.fuse_modules(m, ['conv', 'bn'], inplace=True)
+                if bn_folding:
+                    # quantizer.fuse_modules(m, ['conv', 'bn', 'act'], inplace=True)
+                    torch.ao.quantization.fuse_modules(m, ['conv', 'bn', 'act'], inplace=True)
+                else:
+                    # quantizer.fuse_modules_qat(m, ['conv', 'bn', 'act'], inplace=True)
+                    torch.ao.quantization.fuse_modules_qat(m, ['conv', 'bn', 'act'], inplace=True)
 
+        if mode and bn_folding:
+            self.train()
 
 Model = DetectionModel  # retain YOLOv5 'Model' class for backwards compatibility
 
