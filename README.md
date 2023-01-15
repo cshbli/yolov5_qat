@@ -394,3 +394,15 @@ The observers have been disabled.
       (act): Identity()
     )
 ```
+
+### Experiment 4: Quantization with non pow of two scales
+
+```
+python train.py --data coco.yaml --epochs 100 --cfg models/yolov5m.yaml --weights runs/train/relu/weights/best.pt --hyp data/hyps/hyp.qat.yaml --batch-size 32 --qat --device 2 --bn-folding --disable-observer-epoch 0 --freeze-bn-epoch 0
+```
+
+### Experiment 5: Quantization with pow of two scales
+
+```
+python train.py --data coco.yaml --epochs 100 --cfg models/yolov5m.yaml --weights runs/train/relu/weights/best.pt --hyp data/hyps/hyp.qat.yaml --batch-size 32 --qat --device 0 --bn-folding --disable-observer-epoch 0 --freeze-bn-epoch 0 --pow2-scale
+```
