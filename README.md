@@ -465,3 +465,110 @@ Starting training for 100 epochs...
                  Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:00<00:00,  1.30it/s]
                    all       5000      36335    2.4e-05    0.00171   1.43e-05   4.32e-06
 ```
+
+### Experiment 4: Quantization with full pipeline, Conv+BN+ReLU, skip_add and Concat, and alignment, and ReLU6
+
+- Batch Norm already folded before QAT starts.
+- Disable observers after 1st epoch.
+- Has exploding gradient issues.
+
+```
+python train.py --data coco.yaml --epochs 100 --cfg models/yolov5m.yaml \
+--weights runs/train/relu6/weights/best.pt --hyp data/hyps/hyp.m-relu-tune.yaml \
+--batch-size 32 --qat --device 0
+```
+
+Result log: 
+
+```
+Starting training for 100 epochs...
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size       
+       0/99      14.4G    0.04153    0.05709    0.01401        199        640: 100%|██████████| 3697/3697 [38:13<00:00,  1.61it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:04<00:00,  1.22it/s]
+                   all       5000      36335      0.696      0.555      0.601      0.391
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       1/99      16.9G    0.04148    0.05676    0.01385        366        640:  33%|███▎      | 1220/3697 [12:16<24:55,  1.66it/s]train.py:409: FutureWarning: Non-finite norm encountered in torch.nn.utils.clip_grad_norm_; continuing anyway. Note that the default behavior will change in a future release to error out if a non-finite total norm is encountered. At that point, setting error_if_nonfinite=false will be required to retain the old behavior.
+  torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)  # clip gradients
+       1/99      16.9G     0.0418    0.05699    0.01384        169        640: 100%|██████████| 3697/3697 [37:06<00:00,  1.66it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:02<00:00,  1.26it/s]
+                   all       5000      36335      0.692      0.553      0.597      0.377
+      
+      10/99      18.3G    0.04204    0.05741    0.01371        180        640: 100%|██████████| 3697/3697 [36:56<00:00,  1.67it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:02<00:00,  1.26it/s]
+                   all       5000      36335      0.687      0.549      0.595      0.385      
+      
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      20/99      18.3G     0.0422     0.0577    0.01373        384        640:  77%|███████▋  | 2837/3697 [28:23<08:37,  1.66it/s]train.py:409: FutureWarning: Non-finite norm encountered in torch.nn.utils.clip_grad_norm_; continuing anyway. Note that the default behavior will change in a future release to error out if a non-finite total norm is encountered. At that point, setting error_if_nonfinite=false will be required to retain the old behavior.
+  torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)  # clip gradients
+      20/99      18.3G     0.0422    0.05759    0.01372        205        640: 100%|██████████| 3697/3697 [36:59<00:00,  1.67it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:02<00:00,  1.26it/s]
+                   all       5000      36335        0.7      0.544      0.596      0.384
+
+      
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      34/99      18.3G    0.04265    0.05866    0.01427        432        640:  86%|████████▋ | 3197/3697 [31:55<04:57,  1.68it/s]train.py:409: FutureWarning: Non-finite norm encountered in torch.nn.utils.clip_grad_norm_; continuing anyway. Note that the default behavior will change in a future release to error out if a non-finite total norm is encountered. At that point, setting error_if_nonfinite=false will be required to retain the old behavior.
+  torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)  # clip gradients
+      34/99      18.3G    0.04267    0.05865    0.01426        175        640: 100%|██████████| 3697/3697 [36:54<00:00,  1.67it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:01<00:00,  1.28it/s]
+                   all       5000      36335      0.689      0.539      0.593      0.381
+```
+
+### Experiment 5: Quantization with Conv+BN+ReLU, allow observers and Batch Norm all the time
+
+- Has exploding gradient issues.
+
+```
+python train.py --data coco.yaml --epochs 100 --cfg models/yolov5m.yaml --weights runs/train/relu/weights/best.pt --hyp data/hyps/hyp.m-relu-tune.yaml --batch-size 16 --qat --device 1
+```
+
+Result log: 
+
+```
+Starting training for 100 epochs...
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       0/99      11.8G    0.04318    0.05782    0.01436        199        640: 100%|██████████| 7393/7393 [1:04:26<00:00,  1.91it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 157/157 [01:20<00:00,  1.96it/s]
+                   all       5000      36335      0.665      0.524      0.568      0.352
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       1/99        11G    0.04357    0.05801     0.0144        169        640: 100%|██████████| 7393/7393 [1:02:33<00:00,  1.97it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 157/157 [01:18<00:00,  1.99it/s]
+                   all       5000      36335      0.681      0.537      0.581      0.359
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       2/99        11G    0.04404    0.05837    0.01475         88        640:  34%|███▍      | 2515/7393 [21:10<40:23,  2.01it/s]train.py:411: FutureWarning: Non-finite norm encountered in torch.nn.utils.clip_grad_norm_; continuing anyway. Note that the default behavior will change in a future release to error out if a non-finite total norm is encountered. At that point, setting error_if_nonfinite=false will be required to retain the old behavior.
+  torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)  # clip gradients
+       2/99        11G    0.04438    0.05886    0.01498        144        640: 100%|██████████| 7393/7393 [1:02:05<00:00,  1.98it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 157/157 [01:17<00:00,  2.02it/s]
+                   all       5000      36335      0.667       0.52      0.562      0.345
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       3/99        11G    0.04522    0.06006    0.01587        249        640:  86%|████████▋ | 6377/7393 [53:44<08:34,  1.97it/s]train.py:411: FutureWarning: Non-finite norm encountered in torch.nn.utils.clip_grad_norm_; continuing anyway. Note that the default behavior will change in a future release to error out if a non-finite total norm is encountered. At that point, setting error_if_nonfinite=false will be required to retain the old behavior.
+  torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)  # clip gradients
+       3/99        11G    0.04524    0.06006     0.0159        149        640: 100%|██████████| 7393/7393 [1:02:25<00:00,  1.97it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 157/157 [01:19<00:00,  1.98it/s]
+                   all       5000      36335      0.664      0.518      0.564      0.345
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       4/99        11G     0.0457    0.06033    0.01618        197        640: 100%|██████████| 7393/7393 [1:02:33<00:00,  1.97it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 157/157 [01:25<00:00,  1.83it/s]
+                   all       5000      36335       0.66      0.523      0.564      0.346
+      
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       9/99      11.1G     0.0463    0.06044    0.01618        240        640: 100%|██████████| 7393/7393 [1:05:33<00:00,  1.88it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 157/157 [01:22<00:00,  1.90it/s]
+                   all       5000      36335      0.629       0.52      0.552      0.336
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      11/99      11.1G    0.04646    0.06059     0.0162        162        640: 100%|██████████| 7393/7393 [1:09:47<00:00,  1.77it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 157/157 [01:29<00:00,  1.75it/s]
+                   all       5000      36335      0.642      0.523      0.548      0.332
+
+      
+      20/99      11.1G    0.04658     0.0601    0.01583        205        640: 100%|██████████| 7393/7393 [1:06:04<00:00,  1.86it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 157/157 [01:23<00:00,  1.88it/s]
+                   all       5000      36335      0.638      0.517       0.55      0.335
+```
