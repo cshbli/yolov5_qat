@@ -124,14 +124,15 @@ def run(
         plots=True,
         callbacks=Callbacks(),
         compute_loss=None,
+        ptq=False,
 ):
     # Initialize/load model and set device
     training = model is not None
-    if training:  # called by train.py
+    if training and ptq == False:  # called by train.py
         device, pt, jit, engine = next(model.parameters()).device, True, False, False  # get model device, PyTorch model
         half &= device.type != 'cpu'  # half precision only supported on CUDA
         model.half() if half else model.float()
-    else:  # called directly
+    elif ptq == False:  # called directly
         device = select_device(device, batch_size=batch_size)
 
         # Directories
@@ -156,6 +157,8 @@ def run(
 
     # Configure
     model.eval()
+    if ptq:
+        device = torch.device('cpu')
     cuda = device.type != 'cpu'
     is_coco = isinstance(data.get('val'), str) and data['val'].endswith(f'coco{os.sep}val2017.txt')  # COCO dataset
     nc = 1 if single_cls else int(data['nc'])  # number of classes
