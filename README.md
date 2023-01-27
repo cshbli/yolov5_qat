@@ -1651,5 +1651,37 @@ Starting training for 2 epochs...
                    all       5000      36335      0.717      0.551      0.611      0.422
 ```
 
+### Experiment 10: Quantization with pow of two scales, last Conv only
 
+- ReLU6
 
+```
+model.model[24].qconfig = quantizer.QConfig(activation=activation_quant, weight=weight_quant)
+```
+
+```
+train.py --data coco.yaml --epochs 2 --cfg models/yolov5m.yaml 
+--weights runs/train/relu6/weights/best.pt --hyp data/hyps/hyp.qat.yaml \
+--batch-size 32 --qat --device 2 --bn-folding --disable-observer-epoch 0 \
+--freeze-bn-epoch 0 --pow2-scale
+```
+
+```
+Starting training for 2 epochs...
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        0/1      8.66G    0.04252    0.05653    0.01347        199        640: 100%|██████████| 3697/3697 [13:34<00:00,  4.54it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:36<00:00,  2.19it/s]
+                   all       5000      36335      0.699       0.55      0.602      0.381
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        1/1      11.7G    0.04258    0.05644    0.01337        168        640: 100%|██████████| 3697/3697 [13:29<00:00,  4.57it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:30<00:00,  2.56it/s]
+                   all       5000      36335      0.707      0.548      0.603      0.381
+```
+
+The causes:
+
+- The last 1x1 Conv outputs have large negative values, which caused the scale to be large and lost quantization accuracy.
+
+<img src="./notes/loast_conv_act.png">
