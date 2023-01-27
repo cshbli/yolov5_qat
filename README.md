@@ -1622,4 +1622,34 @@ Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
                    all       5000      36335       0.71       0.56      0.613      0.422
 ```
 
+### Experiment 9: Quantization with pow of two scales, last Conv and weight only
+
+- ReLU6
+
+```
+model.model[24].qconfig = quantizer.QConfig(activation=torch.nn.Identity, weight=weight_quant)
+```
+
+```
+train.py --data coco.yaml --epochs 2 --cfg models/yolov5m.yaml 
+--weights runs/train/relu6/weights/best.pt --hyp data/hyps/hyp.qat.yaml \
+--batch-size 32 --qat --device 2 --bn-folding --disable-observer-epoch 0 \
+--freeze-bn-epoch 0 --pow2-scale
+```
+
+```
+Starting training for 2 epochs...
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        0/1      8.85G    0.03799    0.05639    0.01345        199        640: 100%|██████████| 3697/3697 [13:20<00:00,  4.62it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:32<00:00,  2.47it/s]
+                   all       5000      36335      0.699       0.56      0.609       0.42
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        1/1      10.2G    0.03816    0.05632    0.01335        168        640: 100%|██████████| 3697/3697 [13:20<00:00,  4.62it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:31<00:00,  2.53it/s]
+                   all       5000      36335      0.717      0.551      0.611      0.422
+```
+
+
 
