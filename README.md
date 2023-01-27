@@ -1684,4 +1684,4 @@ The causes:
 
 - The last 1x1 Conv outputs have large negative values, which caused the scale to be large and lost quantization accuracy.
 
-<img src="./notes/loast_conv_act.png">
+<img src="./notes/last_conv_act.png">
