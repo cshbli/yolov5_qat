@@ -114,6 +114,7 @@ def prepare_qat_model(model, device, backend='default'):
         # 2) assign qconfig to model
         model.qconfig = quantizer.QConfig(activation=bst_activation_quant, weight=bst_weight_quant,
                                           qconfig_dict=pre_bind_qconfig)
+        model.model[24].qconfig = None
         
         # 3) prepare qat model using qconfig settings
         prepared_model = quantizer.prepare_qat(model, inplace=False)
