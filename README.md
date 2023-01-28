@@ -773,3 +773,90 @@ Starting training for 2 epochs...
                  Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:30<00:00,  2.55it/s]
                    all       5000      36335      0.717      0.551      0.611      0.422
 ```
+
+### Experiment 12: Quantization with pow of two scales
+
+- ReLU
+- Fixed the quantization scale of last 1x1 Conv layer
+
+```
+    activation_quant = quantizer.FakeQuantize.with_args(
+                observer=quantizer.MovingAverageMinMaxObserver,
+                quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, reduce_range=False, pow2_scale=opt.pow2_scale)
+    activation_quant_fixed = quantizer.FixedQParamsObserver.with_args(
+                scale=8.0 / 128.0, zero_point=0, dtype=torch.qint8, quant_min=-128, quant_max=127)    
+    weight_quant = quantizer.FakeQuantize.with_args(
+                observer=quantizer.MovingAveragePerChannelMinMaxObserver, 
+                quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, reduce_range=False, pow2_scale=opt.pow2_scale)            
+
+    # assign qconfig to model
+    # model.qconfig = quantizer.QConfig(activation=activation_quant, weight=weight_quant)
+    # model.model[24].qconfig = quantizer.QConfig(activation=activation_quant, weight=weight_quant)
+    # model.model[24].qconfig = quantizer.QConfig(activation=torch.nn.Identity, weight=weight_quant)
+    # Although we can set whole model qconfig and then specifiy the last layer using different qconfig,
+    # There are some warnings which need further investigatations.
+    for i in range(24):
+        model.model[i].qconfig = quantizer.QConfig(activation=activation_quant, weight=weight_quant)
+    model.model[24].qconfig = quantizer.QConfig(activation=activation_quant_fixed, weight=weight_quant)
+```
+
+```
+python train.py --data coco.yaml --epochs 10 --cfg models/yolov5m.yaml \
+--weights runs/train/relu/weights/best.pt --hyp data/hyps/hyp.qat.yaml \
+--batch-size 32 --qat --device 2 --bn-folding --disable-observer-epoch 0 
+--freeze-bn-epoch 0 --pow2-scale
+```
+
+```
+Starting training for 10 epochs...
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        0/9      10.7G    0.03881    0.05678    0.01306        199        640: 100%|██████████| 3697/3697 [18:21<00:00,  3.36it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:36<00:00,  2.16it/s]
+                   all       5000      36335      0.707      0.555      0.611      0.412
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        1/9      13.5G    0.03894    0.05669    0.01291        168        640: 100%|██████████| 3697/3697 [17:53<00:00,  3.44it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:35<00:00,  2.20it/s]
+                   all       5000      36335      0.713      0.557      0.613      0.414
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        2/9      13.5G    0.03899     0.0566    0.01276        163        640: 100%|██████████| 3697/3697 [17:51<00:00,  3.45it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:36<00:00,  2.19it/s]
+                   all       5000      36335      0.695       0.56       0.61      0.412
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        3/9      13.5G    0.03895    0.05662    0.01271        125        640: 100%|██████████| 3697/3697 [17:51<00:00,  3.45it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:35<00:00,  2.20it/s]
+                   all       5000      36335       0.71      0.559      0.611       0.41
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        4/9      13.5G    0.03895    0.05642    0.01273        216        640: 100%|██████████| 3697/3697 [17:54<00:00,  3.44it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:36<00:00,  2.18it/s]
+                   all       5000      36335      0.711      0.561      0.612      0.415
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        5/9      13.5G    0.03897    0.05644    0.01269        100        640: 100%|██████████| 3697/3697 [18:14<00:00,  3.38it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:37<00:00,  2.10it/s]
+                   all       5000      36335      0.697      0.561      0.611       0.41
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        6/9      13.5G    0.03901    0.05645    0.01268        172        640: 100%|██████████| 3697/3697 [18:14<00:00,  3.38it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:36<00:00,  2.16it/s]
+                   all       5000      36335      0.709       0.56      0.612      0.415
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        7/9      13.5G    0.03892    0.05628    0.01262        144        640: 100%|██████████| 3697/3697 [17:58<00:00,  3.43it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:35<00:00,  2.20it/s]
+                   all       5000      36335      0.709      0.557      0.611      0.412
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        8/9      13.5G    0.03889     0.0562    0.01259        197        640: 100%|██████████| 3697/3697 [17:51<00:00,  3.45it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:36<00:00,  2.19it/s]
+                   all       5000      36335      0.706      0.562      0.613      0.411
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+        9/9      13.5G    0.03882    0.05617    0.01258        256        640: 100%|██████████| 3697/3697 [17:52<00:00,  3.45it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:35<00:00,  2.21it/s]
+                   all       5000      36335      0.712      0.557      0.611      0.411
+```
