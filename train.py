@@ -75,12 +75,39 @@ def prepare_qat_model(model, opt):
     activation_quant = quantizer.FakeQuantize.with_args(
                 observer=quantizer.MovingAverageMinMaxObserver,
                 quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, reduce_range=False, pow2_scale=opt.pow2_scale)
+    activation_quant_uint8 = quantizer.FakeQuantize.with_args(
+                observer=quantizer.MovingAverageMinMaxObserver,
+                quant_min=0, quant_max=255, dtype=torch.quint8, qscheme=torch.per_tensor_affine, reduce_range=False,
+                pow2_scale=opt.pow2_scale)
+    # Fixed range quantization for last 1x1 Conv                
+    activation_quant_fixed = quantizer.FixedQParamsObserver.with_args(
+                scale=8.0/128.0, zero_point=0, dtype=torch.qint8, quant_min=-128, quant_max=127)
+
+    # Weight is always quantized with int8 and pow2_scale
     weight_quant = quantizer.FakeQuantize.with_args(
                 observer=quantizer.MovingAveragePerChannelMinMaxObserver, 
-                quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, reduce_range=False, pow2_scale=opt.pow2_scale)            
-
+                quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, reduce_range=False, pow2_scale=opt.pow2_scale)
+    
     # assign qconfig to model
-    model.qconfig = quantizer.QConfig(activation=activation_quant, weight=weight_quant)
+    # model.qconfig = quantizer.QConfig(activation=activation_quant, weight=weight_quant)
+    if opt.act == 'ReLU':
+        # ReLU has been fused into the leading Conv, there is no post_quantization after Conv
+        for i in range(24):
+            model.model[i].qconfig = quantizer.QConfig(activation=activation_quant_uint8, weight=weight_quant)
+
+    elif opt.act == 'ReLU6':
+        # ReLU6 is not fused into the leading Conv, it is unnecessary to quantize Conv, then quantize ReLU6 again.
+        for i in range(24):
+            # We disable the post quantization of Conv here.
+            model.model[i].qconfig = quantizer.QConfig(activation=torch.nn.Identity, weight=weight_quant)
+
+        for name, layer in model.named_modules():
+            if isinstance(layer, nn.ReLU6):
+                # We only quantize the ReLU6 layer
+                layer.qconfig = quantizer.QConfig(activation=activation_quant_uint8, weight=torch.nn.Identity)
+    
+    # The last 1x1 Conv will use the fixed range quantization
+    model.model[24].qconfig = quantizer.QConfig(activation=activation_quant_fixed, weight=weight_quant)    
 
     # prepare qat model using qconfig settings
     quantizer.prepare_qat(model, inplace=True)
@@ -550,6 +577,7 @@ def parse_opt(known=False):
     parser.add_argument('--bn-folding', action='store_true', help='Folding BatchNorm first')
     parser.add_argument('--disable-observer-epoch', type=int, default=0, help='Disable observers after which batch')
     parser.add_argument('--freeze-bn-epoch', type=int, default=0, help='Freeze BatchNorm after which batch')
+    parser.add_argument('--act', type=str, choices=['SiLU', 'ReLU', 'ReLU6'], default='ReLU', help='Activation function')
 
     return parser.parse_known_args()[0] if known else parser.parse_args()
 

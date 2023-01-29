@@ -280,6 +280,10 @@ class DetectionModel(BaseModel):
             mi.bias = torch.nn.Parameter(b.view(-1), requires_grad=True)
 
     def fuse_model(self, bn_folding=False):
+        # fuse_modules() will actually fold the BN into the Conv, there is no Batch Norm anymore
+        # fuse_modules_qat() just combining Conv and BN into one module, Batch Norm is still there.
+        # In the old PyTorch version. while in eval() mode, fuse_modules() will fold Batch Norm.
+        # while in train() mode, fuse_modules will NOT fold batch norm.
         mode = self.training
         if bn_folding:
             self.eval()
@@ -287,11 +291,16 @@ class DetectionModel(BaseModel):
         for m in self.modules():
             if type(m) == Conv:
                 if bn_folding:
-                    # quantizer.fuse_modules(m, ['conv', 'bn', 'act'], inplace=True)
-                    torch.ao.quantization.fuse_modules(m, ['conv', 'bn', 'act'], inplace=True)
+                    if type(m.act) == nn.ReLU:
+                        # For ReLU, we are going to fuse ReLU into the leading Conv
+                        quantizer.fuse_modules(m, ['conv', 'bn', 'act'], inplace=True)
+                    else:
+                        quantizer.fuse_modules(m, ['conv', 'bn'], inplace=True)
                 else:
-                    # quantizer.fuse_modules_qat(m, ['conv', 'bn', 'act'], inplace=True)
-                    torch.ao.quantization.fuse_modules_qat(m, ['conv', 'bn', 'act'], inplace=True)
+                    if type(m.act) == nn.ReLU:
+                        quantizer.fuse_modules_qat(m, ['conv', 'bn', 'act'], inplace=True)
+                    else: 
+                        quantizer.fuse_modules_qat(m, ['conv', 'bn'], inplace=True)
 
         if mode and bn_folding:
             self.train()
