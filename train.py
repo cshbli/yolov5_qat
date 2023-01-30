@@ -68,9 +68,16 @@ WORLD_SIZE = int(os.getenv('WORLD_SIZE', 1))
 
 def prepare_qat_model(model, opt):
     # Fuse modules for QAT
-    model.fuse_model(bn_folding=opt.bn_folding)
+    # model.fuse_model(bn_folding=opt.bn_folding)
 
     import bst.torch.ao.quantization as quantizer
+
+    # Fuse Modules for QAT
+    # define one sample data used for fusing model
+    sample_data = torch.randn(1, 3, 640, 640, requires_grad=True)
+
+    # use CPU on input_tensor as our backend for parsing GraphTopology forced model to be on CPU    
+    model = quantizer.fuse_model(model, debug_mode=True, input_tensor=sample_data)
 
     activation_quant = quantizer.FakeQuantize.with_args(
                 observer=quantizer.MovingAverageMinMaxObserver,
