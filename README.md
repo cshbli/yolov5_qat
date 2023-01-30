@@ -900,3 +900,80 @@ Starting training for 50 epochs...
                  Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:35<00:00,  2.21it
                    all       5000      36335      0.709      0.562      0.615      0.421
 ```
+
+### Experiment 14: Quantization with pow of two scales, UINT8 for Conv-BN-ReLU
+
+- ReLU6
+- UINT8
+- Fixed the quantization scale of last 1x1 Conv layer
+
+```
+    activation_quant = quantizer.FakeQuantize.with_args(
+                observer=quantizer.MovingAverageMinMaxObserver,
+                quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, reduce_range=False, pow2_scale=opt.pow2_scale)
+    activation_quant_uint8 = quantizer.FakeQuantize.with_args(
+                observer=quantizer.MovingAverageMinMaxObserver,
+                quant_min=0, quant_max=255, dtype=torch.quint8, qscheme=torch.per_tensor_affine, reduce_range=False,
+                pow2_scale=opt.pow2_scale)
+    # Fixed range quantization for last 1x1 Conv                
+    activation_quant_fixed = quantizer.FixedQParamsObserver.with_args(
+                scale=8.0/128.0, zero_point=0, dtype=torch.qint8, quant_min=-128, quant_max=127)
+
+    # Weight is always quantized with int8 and pow2_scale
+    weight_quant = quantizer.FakeQuantize.with_args(
+                observer=quantizer.MovingAveragePerChannelMinMaxObserver, 
+                quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, reduce_range=False, pow2_scale=opt.pow2_scale)
+    
+    # assign qconfig to model
+    # model.qconfig = quantizer.QConfig(activation=activation_quant, weight=weight_quant)
+    if opt.act == 'ReLU':
+        # ReLU has been fused into the leading Conv, there is no post_quantization after Conv
+        for i in range(24):
+            model.model[i].qconfig = quantizer.QConfig(activation=activation_quant_uint8, weight=weight_quant)
+
+    elif opt.act == 'ReLU6':
+        # ReLU6 is not fused into the leading Conv, it is unnecessary to quantize Conv, then quantize ReLU6 again.
+        for i in range(24):
+            # We disable the post quantization of Conv here.
+            model.model[i].qconfig = quantizer.QConfig(activation=torch.nn.Identity, weight=weight_quant)
+
+        for name, layer in model.named_modules():
+            if isinstance(layer, nn.ReLU6):
+                # We only quantize the ReLU6 layer
+                layer.qconfig = quantizer.QConfig(activation=activation_quant_uint8, weight=torch.nn.Identity)
+    
+    # The last 1x1 Conv will use the fixed range quantization
+    model.model[24].qconfig = quantizer.QConfig(activation=activation_quant_fixed, weight=weight_quant) 
+```
+
+```
+python train.py --data coco.yaml --epochs 50 --cfg models/yolov5m.yaml \
+--weights runs/train/relu6/weights/best.pt --hyp data/hyps/hyp.qat.yaml \
+--batch-size 32 --qat --device 2 --bn-folding --disable-observer-epoch 0 \
+--freeze-bn-epoch 0 --pow2-scale --act ReLU6
+```
+
+```
+Starting training for 50 epochs...
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       0/49      9.54G    0.03805    0.05644    0.01348        199        640: 100%|██████████| 3697/3697 [17:23<00:00,  3.54it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:36<00:00,  2.19i
+                   all       5000      36335        0.7      0.559      0.608      0.419
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       1/49        21G    0.03822    0.05637    0.01338        168        640: 100%|██████████| 3697/3697 [17:04<00:00,  3.61it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:34<00:00,  2.26i
+                   all       5000      36335      0.705      0.555      0.611       0.42
+      
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      15/49        21G    0.03821    0.05586    0.01307        199        640: 100%|██████████| 3697/3697 [17:07<00:00,  3.60it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:35<00:00,  2.24i
+                   all       5000      36335      0.708      0.561      0.611       0.42
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      41/49        21G    0.03816    0.05626     0.0132        172        640: 100%|██████████| 3697/3697 [17:09<00:00,  3.59it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [00:35<00:00,  2.23i
+                   all       5000      36335      0.705      0.565      0.612      0.422    
+```
+
