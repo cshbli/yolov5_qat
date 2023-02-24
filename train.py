@@ -99,12 +99,19 @@ def prepare_qat_model(model, device, backend='default'):
         # use CPU on input_tensor as our backend for parsing GraphTopology forced model to be on CPU    
         model = quantizer.fuse_modules(model, auto_detect=True, debug_mode=False, input_tensor=sample_data.to('cpu'))
 
-        bst_activation_quant = quantizer.FakeQuantize.with_args(
+        bst_activation_quant_int8 = quantizer.FakeQuantize.with_args(
             observer=quantizer.MovingAverageMinMaxObserver.with_args(dtype=torch.qint8), 
             quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, reduce_range=False)
+        bst_activation_quant_uint8 = quantizer.FakeQuantize.with_args(
+            observer=quantizer.MovingAverageMinMaxObserver.with_args(dtype=torch.qint8), 
+            quant_min=-128, quant_max=127, dtype=torch.quint8, qscheme=torch.per_tensor_affine, reduce_range=False)
+        # Fixed range quantization for last 1x1 Conv                
+        bst_activation_quant_fixed = quantizer.FixedQParamsObserver.with_args(
+                    scale=8.0/128.0, zero_point=0, dtype=torch.qint8, quant_min=-128, quant_max=127)
         bst_weight_quant = quantizer.FakeQuantize.with_args(
             observer=quantizer.MovingAveragePerChannelMinMaxObserver.with_args(dtype=torch.qint8), 
             quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, reduce_range=False)
+        
         
         # 1) [bst_alignment] get b0 pre-bind qconfig adjusting Conv's activation quant scheme
         pre_bind_qconfig = quantizer.pre_bind(model, input_tensor=sample_data.to('cpu'), debug_mode=False,
@@ -112,9 +119,12 @@ def prepare_qat_model(model, device, backend='default'):
                                   "activation_scheme": "MovingAverageMinMaxObserver"})
         
         # 2) assign qconfig to model
-        model.qconfig = quantizer.QConfig(activation=bst_activation_quant, weight=bst_weight_quant,
+        # All Convs exclude the last 1x1 Conv have ReLU followed, so we can use UINT8 quantization
+        model.qconfig = quantizer.QConfig(activation=bst_activation_quant_uint8, weight=bst_weight_quant,
                                           qconfig_dict=pre_bind_qconfig)
-        model.model[24].qconfig = None
+        
+        # The last 1x1 Conv will use the fixed range quantization
+        model.model[24].qconfig = quantizer.QConfig(activation=activation_quant_fixed, weight=weight_quant) 
         
         # 3) prepare qat model using qconfig settings
         prepared_model = quantizer.prepare_qat(model, inplace=False)
