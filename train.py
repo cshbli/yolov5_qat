@@ -104,10 +104,11 @@ def prepare_qat_model(model, device, backend='default'):
             quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_tensor_affine, reduce_range=False)
         bst_activation_quant_uint8 = quantizer.FakeQuantize.with_args(
             observer=quantizer.MovingAverageMinMaxObserver.with_args(dtype=torch.qint8), 
-            quant_min=-128, quant_max=127, dtype=torch.quint8, qscheme=torch.per_tensor_affine, reduce_range=False)
-        # Fixed range quantization for last 1x1 Conv                
-        bst_activation_quant_fixed = quantizer.FixedQParamsObserver.with_args(
-                    scale=8.0/128.0, zero_point=0, dtype=torch.qint8, quant_min=-128, quant_max=127)
+            quant_min=0, quant_max=255, dtype=torch.quint8, qscheme=torch.per_tensor_affine, reduce_range=False)
+        # Fixed range quantization for last 1x1 Conv
+        bst_activation_quant_fixed = quantizer.FakeQuantize.with_args(
+            observer=quantizer.FixedQParamsObserver.with_args(dtype=torch.qint8),
+            quant_min=-128, quant_max=127, dtype=torch.qint8, scale=8.0/128.0, zero_point=0)
         bst_weight_quant = quantizer.FakeQuantize.with_args(
             observer=quantizer.MovingAveragePerChannelMinMaxObserver.with_args(dtype=torch.qint8), 
             quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, reduce_range=False)
@@ -124,7 +125,7 @@ def prepare_qat_model(model, device, backend='default'):
                                           qconfig_dict=pre_bind_qconfig)
         
         # The last 1x1 Conv will use the fixed range quantization
-        model.model[24].qconfig = quantizer.QConfig(activation=activation_quant_fixed, weight=weight_quant) 
+        model.model[24].qconfig = quantizer.QConfig(activation=bst_activation_quant_fixed, weight=bst_weight_quant)
         
         # 3) prepare qat model using qconfig settings
         prepared_model = quantizer.prepare_qat(model, inplace=False)
@@ -505,7 +506,8 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
                         onnx_model_path, quant_param_json_path = quantizer.export_onnx(model, 
                                                                         sample_data, 
                                                                         stage_dict=stage_dict, 
-                                                                        result_dir=w)
+                                                                        result_dir=w,
+                                                                        debug_mode=True)
                 if opt.save_period > 0 and epoch % opt.save_period == 0:
                     torch.save(ckpt, w / f'epoch{epoch}.pt')
                 del ckpt
