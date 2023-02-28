@@ -106,9 +106,10 @@ def prepare_qat_model(model, device, backend='default'):
             observer=quantizer.MovingAverageMinMaxObserver.with_args(dtype=torch.qint8), 
             quant_min=0, quant_max=255, dtype=torch.quint8, qscheme=torch.per_tensor_affine, reduce_range=False)
         # Fixed range quantization for last 1x1 Conv
-        bst_activation_quant_fixed = quantizer.FakeQuantize.with_args(
-            observer=quantizer.FixedQParamsObserver.with_args(dtype=torch.qint8),
-            quant_min=-128, quant_max=127, dtype=torch.qint8, scale=8.0/128.0, zero_point=0)
+        bst_activation_quant_fixed = quantizer.FixedQParamsFakeQuantize.with_args(
+            observer=quantizer.FixedQParamsObserver.with_args(scale=16.0/128.0, zero_point=0, dtype=torch.qint8, 
+            qscheme=torch.per_tensor_affine, quant_min=-128, quant_max=127),
+            quant_min=-128, quant_max=127)
         bst_weight_quant = quantizer.FakeQuantize.with_args(
             observer=quantizer.MovingAveragePerChannelMinMaxObserver.with_args(dtype=torch.qint8), 
             quant_min=-128, quant_max=127, dtype=torch.qint8, qscheme=torch.per_channel_affine, reduce_range=False)

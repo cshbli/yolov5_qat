@@ -582,7 +582,9 @@ model.model[24].qconfig = None
 ```
 
 ```
-train.py --data coco.yaml --epochs 20 --cfg models/yolov5m.yaml --weights runs/train/relu/weights/best.pt --hyp data/hyps/hyp.qat.yaml --batch-size 32 --qat --device 2
+python train.py --data coco.yaml --epochs 20 --cfg models/yolov5m.yaml \
+--weights runs/train/relu/weights/best.pt --hyp data/hyps/hyp.qat.yaml \
+--batch-size 32 --qat --device 2
 ```
 
 Result log: 
@@ -686,4 +688,140 @@ Starting training for 20 epochs...
       19/19      23.3G    0.03796    0.05622    0.01243        198        640: 100%|██████████| 3697/3697 [36:29<00:00,  1.69it/s]
                  Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:00<00:00,  1.31it/s]
                    all       5000      36335      0.705      0.558      0.611       0.42
+```
+
+### Experiment 7: FixedQParamsFakeQuantize on the last 1x1 Conv (ReLU6)
+
+- Has exploding gradient issues.
+
+```
+bst_activation_quant_fixed = quantizer.FixedQParamsFakeQuantize.with_args(
+            observer=quantizer.FixedQParamsObserver.with_args(scale=16.0/128.0, zero_point=0, dtype=torch.qint8, 
+            qscheme=torch.per_tensor_affine, quant_min=-128, quant_max=127),
+            quant_min=-128, quant_max=127)
+```
+
+```
+# The last 1x1 Conv will use the fixed range quantization
+model.model[24].qconfig = quantizer.QConfig(activation=bst_activation_quant_fixed, weight=bst_weight_quant)            
+```
+
+```
+python train.py --data coco.yaml --epochs 20 --cfg models/yolov5m.yaml \
+--weights runs/train/relu6/weights/best.pt --hyp data/hyps/hyp.qat.yaml \
+--batch-size 32 --qat --device 2
+```
+
+Result log: 
+
+```
+Starting training for 20 epochs...
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       
+       1/19      15.3G     0.0397    0.05654     0.0134        169        640: 100%|██████████| 3697/3697 [38:33<00:00,  1.60it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:05<00:00,  1.
+                   all       5000      36335      0.708      0.556      0.609      0.405    
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       7/19      17.9G    0.03973    0.05626    0.01314        466        640:  82%|████████▏ | 3038/3697 [31:44<06:53,  1.59it/s]train.py:406: FutureWarning: Non-finite norm encountered in torch.nn.utils.clip_grad_norm_; continuing anyway. Note that the default behavior will change in a future release to error out if a non-finite total norm is encountered. At that point, setting error_if_nonfinite=false will be required to retain the old behavior.
+  torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)  # clip gradients
+       7/19      17.9G    0.03973     0.0562    0.01314        134        640: 100%|██████████| 3697/3697 [38:37<00:00,  1.60it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:06<00:00,  1.
+                   all       5000      36335      0.711      0.552      0.608      0.404
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       8/19      17.9G    0.03959    0.05608    0.01308        302        640:  93%|█████████▎| 3421/3697 [35:40<02:52,  1.60it/s]train.py:406: FutureWarning: Non-finite norm encountered in torch.nn.utils.clip_grad_norm_; continuing anyway. Note that the default behavior will change in a future release to error out if a non-finite total norm is encountered. At that point, setting error_if_nonfinite=false will be required to retain the old behavior.
+  torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)  # clip gradients
+       8/19      17.9G    0.03959    0.05607    0.01308        217        640: 100%|██████████| 3697/3697 [38:32<00:00,  1.60it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:05<00:00,  1.
+                   all       5000      36335      0.699      0.557      0.608        0.4
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       9/19      17.9G    0.03964    0.05613    0.01308        240        640: 100%|██████████| 3697/3697 [38:35<00:00,  1.60it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:06<00:00,  1.
+                   all       5000      36335      0.701      0.558      0.608      0.406
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      15/19      17.9G    0.03966    0.05574    0.01304        416        640:  11%|█         | 390/3697 [04:04<34:11,  1.61it/s]train.py:406: FutureWarning: Non-finite norm encountered in torch.nn.utils.clip_grad_norm_; continuing anyway. Note that the default behavior will change in a future release to error out if a non-finite total norm is encountered. At that point, setting error_if_nonfinite=false will be required to retain the old behavior.
+  torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)  # clip gradients
+      15/19      17.9G    0.03958    0.05595      0.013        183        640: 100%|██████████| 3697/3697 [38:33<00:00,  1.60it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:05<00:00,  1.
+                   all       5000      36335      0.707      0.559      0.609      0.405
+            
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      19/19      17.9G    0.03946    0.05604    0.01285        392        640:  26%|██▌       | 946/3697 [09:52<28:39,  1.60it/s]train.py:406: FutureWarning: Non-finite norm encountered in torch.nn.utils.clip_grad_norm_; continuing anyway. Note that the default behavior will change in a future release to error out if a non-finite total norm is encountered. At that point, setting error_if_nonfinite=false will be required to retain the old behavior.
+  torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)  # clip gradients
+      19/19      17.9G    0.03943    0.05579    0.01287        198        640: 100%|██████████| 3697/3697 [38:33<00:00,  1.60it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:10<00:00,  1.12it/s]
+                   all       5000      36335      0.705      0.559       0.61      0.406
+```
+
+### Experiment 8: FixedQParamsFakeQuantize on the last 1x1 Conv (ReLU)
+
+- Has exploding gradient issues.
+
+```
+bst_activation_quant_fixed = quantizer.FixedQParamsFakeQuantize.with_args(
+            observer=quantizer.FixedQParamsObserver.with_args(scale=16.0/128.0, zero_point=0, dtype=torch.qint8, 
+            qscheme=torch.per_tensor_affine, quant_min=-128, quant_max=127),
+            quant_min=-128, quant_max=127)
+```
+
+```
+# The last 1x1 Conv will use the fixed range quantization
+model.model[24].qconfig = quantizer.QConfig(activation=bst_activation_quant_fixed, weight=bst_weight_quant)            
+```
+
+```
+python train.py --data coco.yaml --epochs 20 --cfg models/yolov5m.yaml \
+--weights runs/train/relu/weights/best.pt --hyp data/hyps/hyp.qat.yaml \
+--batch-size 32 --qat --device 2
+```
+
+Result log: 
+
+```
+Starting training for 20 epochs...
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       0/19      12.8G    0.03478    0.05438    0.01325        385        640:   0%|          | 0/3697 [00:00<?, ?it/s]WARNING ⚠️ TensorBoard graph visualization failure 
+Return value was annotated as having type Tuple[int, int] but is actually of type Tuple[NoneType, NoneType]:
+  File "/bsnn/users/hongbing/Projects/bstnnx_training/bstnnx_training/PyTorch/QAT/core/observer/observer_base.py", line 128
+        if self.has_customized_qrange:
+            # TODO: clean this up later
+            return self.quant_min, self.quant_max
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ <--- HERE
+            # # This initialization here is to be resolve TorchScript compilation issues and allow
+            # # using of refinement to decouple initial_qmin and initial_qmax from quantization range.
+
+       0/19      14.7G    0.03967     0.0565    0.01282        199        640: 100%|██████████| 3697/3697 [39:27<00:00,  1.56it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:07<00:00,  1.18it/s]
+                   all       5000      36335      0.704      0.557      0.609      0.405
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+       1/19      16.8G    0.03961    0.05632    0.01272        318        640:  22%|██▏       | 806/3697 [08:22<30:01,  1.60it/s]train.py:406: FutureWarning: Non-finite norm encountered in torch.nn.utils.clip_grad_norm_; continuing anyway. Note that the default behavior will change in a future release to error out if a non-finite total norm is encountered. At that point, setting error_if_nonfinite=false will be required to retain the old behavior.
+  torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)  # clip gradients
+       1/19      16.8G    0.03979    0.05644    0.01269        169        640: 100%|██████████| 3697/3697 [38:29<00:00,  1.60it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:05<00:00,  1.21it/s]
+                   all       5000      36335      0.722       0.55      0.612      0.408
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      17/19      16.8G    0.03952    0.05564    0.01222        334        640:  73%|███████▎  | 2716/3697 [28:19<10:14,  1.60it/s]train.py:406: FutureWarning: Non-finite norm encountered in torch.nn.utils.clip_grad_norm_; continuing anyway. Note that the default behavior will change in a future release to error out if a non-finite total norm is encountered. At that point, setting error_if_nonfinite=false will be required to retain the old behavior.
+  torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)  # clip gradients
+      17/19      16.8G    0.03952    0.05569    0.01222        176        640: 100%|██████████| 3697/3697 [38:32<00:00,  1.60it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:05<00:00,  1.21it/s]
+                   all       5000      36335      0.703      0.562      0.612      0.407
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      18/19      16.8G     0.0395    0.05566    0.01222        541        640:  92%|█████████▏| 3407/3697 [35:33<03:01,  1.60it/s]train.py:406: FutureWarning: Non-finite norm encountered in torch.nn.utils.clip_grad_norm_; continuing anyway. Note that the default behavior will change in a future release to error out if a non-finite total norm is encountered. At that point, setting error_if_nonfinite=false will be required to retain the old behavior.
+  torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=10.0)  # clip gradients
+      18/19      16.8G     0.0395    0.05566    0.01222        216        640: 100%|██████████| 3697/3697 [38:34<00:00,  1.60it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:05<00:00,  1.20it/s]
+                   all       5000      36335      0.701      0.562      0.612      0.407
+
+      Epoch    GPU_mem   box_loss   obj_loss   cls_loss  Instances       Size
+      19/19      16.8G    0.03949    0.05567    0.01218        198        640: 100%|██████████| 3697/3697 [38:32<00:00,  1.60it/s]
+                 Class     Images  Instances          P          R      mAP50   mAP50-95: 100%|██████████| 79/79 [01:05<00:00,  1.20it/s]
+                   all       5000      36335      0.709      0.558      0.612      0.405
 ```
